@@ -68,12 +68,12 @@ tr.low-proba.off td{opacity:.25}
 <div class="wrap">
 
 <h1>Simulateur P&L — Pipeline commercial</h1>
-<p class="sub">16 deals En exec + Urgent · Côme Real Estate · Cochez les deals à closer, les KPIs et l'agenda s'actualisent.</p>
+<p class="sub">14 deals En exec + Urgent · Côme Real Estate · Cochez les deals à closer, les KPIs et l'agenda s'actualisent.</p>
 
 <div class="flt" id="flt">
-  <button data-a="all" class="active">Tous (16)</button>
+  <button data-a="all" class="active">Tous (14)</button>
   <button data-a="exec">En exec (5)</button>
-  <button data-a="urgent">Urgent (11)</button>
+  <button data-a="urgent">Urgent (9)</button>
   <button data-a="high">Proba ≥75%</button>
   <button data-a="conservative">Proba ≥50%</button>
   <button data-a="none">Aucun</button>
@@ -132,17 +132,16 @@ const deals=[
   {id:'sd',n:'Saint-Denis — Proudhon',sh:'Saint-Denis',sp:'Mosaic REF / Ginkgo Fund III',i:'BR',pr:'En exec',ds:'2026-05-25',de:null,p:1.0,sz:2.0,t:9.5,uf:0,pm:20},
   {id:'j50',n:'Paris — 50 Jacob',sh:'50 Jacob',sp:'CinqTerre',i:'DE',pr:'En exec',ds:'2026-06-30',de:null,p:1.0,sz:0.88,t:17.7,uf:15,pm:0},
   {id:'fb26',n:'Paris — 26 Francs Bourgeois',sh:'26 Francs Bgs',sp:'CinqTerre',i:'DE',pr:'En exec',ds:'2026-06-30',de:null,p:1.0,sz:0.785,t:19.7,uf:13,pm:0},
-  {id:'am',n:'Aigues-Mortes — Meublé',sh:'Aigues-Mortes',sp:'Kintsugi RE',i:'EQ',pr:'En exec',ds:'2026-07-01',de:null,p:0.95,sz:1.155,t:13.8,uf:69,pm:85},
+  {id:'am',n:'Aigues-Mortes - Meublé de tourisme',sh:'Aigues-Mortes',sp:'Kintsugi RE',i:'EQ',pr:'En exec',ds:'2026-07-01',de:null,p:0.95,sz:1.172,t:17.8,uf:70,pm:205},
   {id:'mb',n:'Moncey — Brokerage',sh:'Moncey Brok.',sp:'Barnes AM',i:'BK',pr:'En exec',ds:'2026-09-15',de:null,p:0.95,sz:18.0,t:0,uf:225,pm:0},
-  {id:'st',n:'Saint-Tropez — Villa Bagatelle',sh:'Saint-Tropez',sp:'Carré Promotion / Sate IP',i:'BR',pr:'Urgent',ds:'2026-05-31',de:null,p:0.10,sz:7.0,t:10.0,uf:350,pm:0},
   {id:'lit',n:'Litigation',sh:'Litigation',sp:'Eskariam Advisors / Victory Park',i:'AU',pr:'Urgent',ds:'2026-06-30',de:'2026-09-15',p:0.75,sz:5.0,t:0,uf:250,pm:800},
   {id:'cy',n:'Sandton — Portefeuille Cayman',sh:'Sandton-Cayman',sp:'Sandton / Cayman Group',i:'EQ',pr:'Urgent',ds:'2026-07-15',de:null,p:0.10,sz:5.0,t:0,uf:250,pm:0},
 
   {id:'pk',n:'Parkings — 19 Vacquerie, Paris',sh:'19 Vacquerie',sp:'Cyril Laborde',i:'EQ',pr:'Urgent',ds:'2026-09-07',de:null,p:0.10,sz:2.294,t:15.0,uf:138,pm:1237},
   {id:'ms',n:'Marseille - Breuteil',sh:'Breuteil',sp:'Kintsugi RE',i:'EQ',pr:'Urgent',ds:'2026-11-02',de:'2027-01-11',p:0.75,sz:4.73,t:13.6,uf:284,pm:315},
   {id:'sj',n:'Saint-Jorioz - Annecy',sh:'Saint-Jorioz',sp:'Coco AM',i:'EQ',pr:'Urgent',ds:'2026-12-01',de:'2027-02-15',p:0.75,sz:5.0,t:12.3,uf:300,pm:434},
-  {id:'lr',n:'La Rochelle - Le Rupella',sh:'La Rochelle',sp:'Coco AM',i:'EQ',pr:'Urgent',ds:'2026-08-01',de:'2026-09-30',p:0.80,sz:1.5,t:15.3,uf:149,pm:256},
-  {id:'lg',n:'Les Gets - L\'Ecrin',sh:'Les Gets',sp:'Macber / Chamoue Promotion',i:'EQ',pr:'Urgent',ds:'2026-06-30',de:null,p:0.50,sz:1.6,t:15.0,uf:96,pm:508},
+  {id:'lr',n:'La Rochelle - Le Rupella',sh:'La Rochelle',sp:'Coco AM',i:'EQ',pr:'Urgent',ds:'2026-08-01',de:'2026-09-30',p:0.80,sz:1.5,t:13.1,uf:111,pm:143},
+  {id:'lg',n:'Les Gets - L\'Ecrin',sh:'Les Gets',sp:'Macber / Chamoue Promotion',i:'EQ',pr:'Urgent',ds:'2026-09-01',de:null,p:0.50,sz:1.6,t:15.0,uf:96,pm:407},
   {id:'ol',n:'Ollioules - Pôle Ouest',sh:'Ollioules',sp:'LTK Finance / Real Land Group',i:'BR',pr:'Urgent',ds:'2026-06-30',de:null,p:0.50,sz:2.5,t:0,uf:0,pm:0},
   {id:'pu',n:'Datacenter - Puteaux — Le Capitole ⚠',sh:'DC Puteaux ⚠',sp:'Mameri / Firce',i:'BR',pr:'Urgent',ds:null,de:null,p:0.10,sz:180.0,t:0,uf:0,pm:0}
 ];
@@ -176,7 +175,7 @@ function calc(){
 function renderKPIs(){
   const k=calc();
   document.getElementById('kpis').innerHTML=`
-    <div class="kpi"><div class="kpi-l">Deals</div><div class="kpi-v">${k.n}<span style="font-size:12px;color:#CCC"> /16</span></div></div>
+    <div class="kpi"><div class="kpi-l">Deals</div><div class="kpi-v">${k.n}<span style="font-size:12px;color:#CCC"> /14</span></div></div>
     <div class="kpi"><div class="kpi-l">Notionnel</div><div class="kpi-v">${k.sz.toFixed(1)} M€</div><div class="kpi-s" style="color:#888;font-size:12px">Sécurisé ${k.szSec.toFixed(1)} M€</div><div class="kpi-s" style="color:#555;font-size:12px">À lever ${(k.sz-k.szSec).toFixed(1)} M€</div></div>
     <div class="kpi">
       <div class="kpi-l">Upfront</div>
