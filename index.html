@@ -24,11 +24,11 @@ h1{font-size:19px;font-weight:500;margin-bottom:3px}
 .sec{font-size:9px;font-weight:600;color:#999;margin:.9rem 0 .4rem;text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:8px}
 .sec::after{content:'';flex:1;height:1px;background:#E5E1D8}
 /* TABLE */
-.tbl-wrap{background:#FFF;border:1px solid #E5E1D8;border-radius:8px;overflow:hidden;margin-bottom:.25rem}
+.tbl-wrap{background:#FFF;border:1px solid #E5E1D8;border-radius:8px;overflow-x:auto;margin-bottom:.25rem}
 table{width:100%;border-collapse:collapse;font-size:11.5px}
 thead{background:#F9F8F5}
-th{padding:6px 8px;text-align:left;font-size:9px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;border-bottom:1px solid #E5E1D8}
-td{padding:5px 8px;border-bottom:1px solid #F0EDE6;vertical-align:middle;white-space:nowrap}
+th{padding:6px 4px;text-align:left;font-size:9px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;border-bottom:1px solid #E5E1D8}
+td{padding:5px 4px;border-bottom:1px solid #F0EDE6;vertical-align:middle;white-space:nowrap}
 tr:last-child td{border-bottom:none}
 /* ROW BG PAR PRIORITÉ */
 tr.exec-row td{background:#F2FBF6}
@@ -38,7 +38,7 @@ tr.exec-row:hover td{background:#E8F7EE;cursor:pointer}
 tr.urg-row:hover td{background:#F7F4EE;cursor:pointer}
 tr.exec-row.off:hover td{background:#F2FBF6;cursor:pointer}
 tr.urg-row.off:hover td{background:#FDFCF8;cursor:pointer}
-tr.low-proba td{color:#BBB !important;background:#FAFAFA !important;font-style:italic}
+tr.low-proba td{color:#888 !important;background:#FAFAFA !important;font-style:italic}
 tr.low-proba:hover td{background:#F5F5F5 !important;cursor:pointer}
 tr.low-proba.off td{opacity:.25}
 /* NOM COULEUR */
@@ -54,6 +54,16 @@ tr.low-proba.off td{opacity:.25}
 .bk{background:#F0EEEB;color:#666}
 .pr-exec{background:#E6F5EE;color:#1B6837;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
 .pr-urg{background:#FDF2E4;color:#8A4A0E;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
+/* Champs éditables discrets : transparents au repos, blancs au focus */
+.ed{border:1px solid transparent;border-radius:4px;background:transparent;padding:2px 4px;font-family:inherit;transition:border .1s,background .1s;color:inherit;font-size:inherit}
+.ed:hover{border-color:#E0DDD5}
+.ed:focus{outline:none;border-color:#1A1A1A;background:#FFF}
+select.ed{cursor:pointer;-webkit-appearance:none;appearance:none}
+.delDeal{border:none;background:transparent;color:#CCC;cursor:pointer;font-size:13px;padding:2px 4px}
+.delDeal:hover{color:#B4442A}
+th.sorth{cursor:pointer;user-select:none}
+th.sorth:hover{color:#1A1A1A}
+th.sorth .ar{color:#1A1A1A;font-size:9px;margin-left:2px}
 .chk{width:14px;height:14px;cursor:pointer}
 /* TIMELINE */
 .tlbox{background:#FFF;border:1px solid #E5E1D8;border-radius:8px;overflow-x:auto;padding:8px}
@@ -85,6 +95,9 @@ tr.low-proba.off td{opacity:.25}
   <button data-a="high">Proba ≥75%</button>
   <button data-a="conservative">Proba ≥50%</button>
   <button data-a="none">Aucun</button>
+  <button id="addDealBtn" style="margin-left:auto;background:#1A1A1A;border:1px solid #1A1A1A;color:#FFF">+ Deal</button>
+  <button id="refreshNotionBtn" style="background:#185FA5;border:1px solid #185FA5;color:#FFF" title="Relit les données depuis Notion et met à jour la page (~1 min)">⟳ Refresh Notion</button>
+  <button id="resetPnlBtn" style="background:#FFF;border:1px solid #D4D0C8;color:#B4442A" title="Restaure les valeurs d'origine et efface vos modifications locales">↺ Réinitialiser</button>
 </div>
 
 <div class="kpis" id="kpis"></div>
@@ -95,15 +108,16 @@ tr.low-proba.off td{opacity:.25}
 <thead>
 <tr>
   <th style="width:26px"></th>
-  <th style="width:70px">Type</th>
-  <th>Deal · Sponsor</th>
-  <th>Priorité</th>
-  <th>Date décaissement</th>
-  <th class="num">Taille</th>
-  <th class="num">TRI</th>
-  <th class="num">Upfront</th>
-  <th class="num">Promote</th>
-  <th class="num">Proba</th>
+  <th style="width:70px" class="sorth" data-col="i">Type</th>
+  <th class="sorth" data-col="n">Deal · Sponsor</th>
+  <th class="sorth" data-col="pr">Priorité</th>
+  <th class="sorth" data-col="ds">Date décaissement</th>
+  <th class="num sorth" data-col="sz">Taille</th>
+  <th class="num sorth" data-col="t">TRI</th>
+  <th class="num sorth" data-col="uf">Upfront</th>
+  <th class="num sorth" data-col="pm">Promote</th>
+  <th class="num sorth" data-col="p">Proba</th>
+  <th style="width:30px"></th>
 </tr>
 </thead>
 <tbody id="tbody"></tbody>
@@ -137,24 +151,53 @@ tr.low-proba.off td{opacity:.25}
 
 <script>
 let deals=[
-  {id:'chamonix0',n:'Chamonix - L’Olympique',sh:'Chamonix - L’O',sp:'',i:'EQ',pr:'Urgent',ds:null,de:null,p:0,sz:0,t:0,uf:0,pm:0},
-  {id:'mozaicst1',n:'Mozaic_Strasbourg (Wacken)',sh:'Mozaic_Strasbo',sp:'Artea',i:'BR',pr:'Urgent',ds:'2026-08-03',de:null,p:0.75,sz:2.5,t:12,uf:40,pm:0},
-  {id:'larochel2',n:'La Rochelle - Clinique du Mail',sh:'La Rochelle - ',sp:'Novaxia',i:'BR',pr:'Urgent',ds:'2026-09-30',de:null,p:0.05,sz:15,t:0,uf:300,pm:0},
-  {id:'neuillys3',n:'Neuilly-sur-Seine - 20 Château',sh:'Neuilly-sur-Se',sp:'',i:'EQ',pr:'Urgent',ds:null,de:null,p:0.05,sz:19.806,t:12.9,uf:1180,pm:1326},
-  {id:'saintbar4',n:'Saint-Barthélemy - OIMA Villas',sh:'Saint-Barthéle',sp:'Silvergrey Invest',i:'BR',pr:'Urgent',ds:'2026-08-03',de:null,p:0.75,sz:1.5,t:10,uf:23,pm:0},
-  {id:'nanterre5',n:'Nanterre - Padel',sh:'Nanterre - Pad',sp:'Cyril Laborde',i:'EQ',pr:'Urgent',ds:'2027-03-08',de:null,p:0.15,sz:3.046,t:9,uf:305,pm:1601},
-  {id:'larochel6',n:'La Rochelle - Le Rupella',sh:'La Rochelle - ',sp:'Coco AM',i:'EQ',pr:'Urgent',ds:'2027-01-31',de:null,p:0.75,sz:1.5,t:11.4,uf:90,pm:76},
-  {id:'marseill7',n:'Marseille - Breteuil',sh:'Marseille - Br',sp:'Kintsugi Real Estate',i:'EQ',pr:'Urgent',ds:'2026-11-02',de:'2027-01-11',p:0.75,sz:4.73,t:13.6,uf:284,pm:315},
-  {id:'litigati8',n:'Litigation',sh:'Litigation',sp:'Eskariam Advisors',i:'AU',pr:'En exec',ds:'2026-06-30',de:'2026-09-15',p:1,sz:10,t:0,uf:400,pm:800},
-  {id:'paris0329',n:'Paris 03 - 26 Francs Bourgeois',sh:'Paris 03 - 26 ',sp:'CinqTerre',i:'DE',pr:'En exec',ds:'2026-06-30',de:null,p:1,sz:0.785,t:19.7,uf:13,pm:0},
-  {id:'aiguesmo10',n:'Aigues-Mortes - Meublé de tourisme',sh:'Aigues-Mortes ',sp:'Kintsugi Real Estate',i:'EQ',pr:'En exec',ds:'2026-07-01',de:null,p:0.95,sz:3.008,t:20.8,uf:180,pm:-371},
-  {id:'saintjor11',n:'Saint-Jorioz - Annecy',sh:'Saint-Jorioz -',sp:'Coco AM',i:'EQ',pr:'Urgent',ds:'2026-12-01',de:'2027-02-15',p:0.75,sz:5,t:12.3,uf:300,pm:434},
-  {id:'paris06512',n:'Paris 06 - 50 Jacob',sh:'Paris 06 - 50 ',sp:'CinqTerre',i:'DE',pr:'En exec',ds:'2026-07-24',de:null,p:1,sz:0.88,t:17.7,uf:15,pm:0}
+  {id:'j50',n:'Paris — 50 Jacob',sh:'50 Jacob',sp:'CinqTerre',i:'DE',pr:'En exec',ds:'2026-06-30',de:null,p:1.0,sz:0.88,t:17.7,uf:15,pm:0},
+  {id:'fb26',n:'Paris — 26 Francs Bourgeois',sh:'26 Francs Bgs',sp:'CinqTerre',i:'DE',pr:'En exec',ds:'2026-06-30',de:null,p:1.0,sz:0.785,t:19.7,uf:13,pm:0},
+  {id:'am',n:'Aigues-Mortes - Meublé de tourisme',sh:'Aigues-Mortes',sp:'Kintsugi RE',i:'EQ',pr:'En exec',ds:'2026-07-01',de:null,p:0.95,sz:1.199,t:17.0,uf:72,pm:187},
+  {id:'mb',n:'Moncey — Brokerage',sh:'Moncey Brok.',sp:'Barnes AM',i:'BK',pr:'En exec',ds:'2026-09-15',de:null,p:0.95,sz:18.0,t:0,uf:225,pm:0},
+  {id:'lit',n:'Litigation',sh:'Litigation',sp:'Eskariam Advisors / Victory Park',i:'AU',pr:'Urgent',ds:'2026-06-30',de:'2026-09-15',p:0.75,sz:10.0,t:0,uf:400,pm:800},
+  {id:'cy',n:'Sandton — Portefeuille Cayman',sh:'Sandton-Cayman',sp:'Sandton / Cayman Group',i:'EQ',pr:'Urgent',ds:'2026-07-15',de:null,p:0.10,sz:5.0,t:0,uf:250,pm:0},
+  {id:'ms',n:'Marseille - Breuteil',sh:'Breuteil',sp:'Kintsugi RE',i:'EQ',pr:'Urgent',ds:'2026-11-02',de:'2027-01-11',p:0.75,sz:4.73,t:13.6,uf:284,pm:315},
+  {id:'sj',n:'Saint-Jorioz - Annecy',sh:'Saint-Jorioz',sp:'Coco AM',i:'EQ',pr:'Urgent',ds:'2026-12-01',de:'2027-02-15',p:0.75,sz:5.0,t:12.3,uf:300,pm:434},
+  {id:'lr',n:'La Rochelle - Le Rupella',sh:'La Rochelle',sp:'Coco AM',i:'EQ',pr:'Urgent',ds:'2026-08-01',de:'2026-09-30',p:0.80,sz:1.5,t:11.35,uf:90,pm:76},
+  {id:'lg',n:'Les Gets - L\'Ecrin',sh:'Les Gets',sp:'Macber / Chamoue Promotion',i:'EQ',pr:'Urgent',ds:'2026-09-01',de:null,p:0.50,sz:1.6,t:15.0,uf:96,pm:407},
+  {id:'nt',n:'Nanterre - Padel',sh:'Nanterre',sp:'Cyril Laborde',i:'EQ',pr:'Urgent',ds:null,de:null,p:0.50,sz:2.922,t:15.0,uf:175,pm:1038},
+  {id:'sj2',n:'Saint-James - Parkings Bd Raspail',sh:'Saint-James',sp:'Financière Saint-James',i:'BR',pr:'Urgent',ds:'2026-09-15',de:null,p:0.25,sz:13.0,t:0,uf:0,pm:0},
+  {id:'fm',n:'Paris 04 - 15 François Miron',sh:'François Miron',sp:'Côme / Direct',i:'EQ',pr:'Urgent',ds:null,de:null,p:0,sz:10.0,t:0,uf:0,pm:0},
+  {id:'pu',n:'Datacenter - Puteaux — Le Capitole ⚠',sh:'DC Puteaux ⚠',sp:'Mameri / Firce',i:'BR',pr:'Urgent',ds:null,de:null,p:0.10,sz:180.0,t:0,uf:0,pm:0}
 ];
 const iC={EQ:'#378ADD',BR:'#BA7517',DE:'#7F77DD',AU:'#D85A30',BK:'#2D9B7D'};
 const iL={EQ:'Equity',BR:'Bridge SR',DE:'Demeures',AU:'Autre',BK:'Broker'};
 const iP={EQ:'eq',BR:'br',DE:'de',AU:'au',BK:'bk'};
 let sel=new Set(deals.map(d=>d.id));
+
+// --- Édition + persistance locale (brique A) ---
+const DEALS_NOTION=JSON.parse(JSON.stringify(deals)); // copie de référence (valeurs du commit)
+try{
+  const saved=localStorage.getItem('cre_pnl_deals');
+  if(saved){
+    const arr=JSON.parse(saved);
+    if(Array.isArray(arr)&&arr.length)deals=arr;
+    sel=new Set(deals.map(d=>d.id));
+  }
+}catch(e){}
+function savePnl(){
+  try{localStorage.setItem('cre_pnl_deals',JSON.stringify(deals));}catch(e){}
+}
+function resetPnl(){
+  try{localStorage.removeItem('cre_pnl_deals');}catch(e){}
+  deals=JSON.parse(JSON.stringify(DEALS_NOTION));
+  sel=new Set(deals.map(d=>d.id));
+  renderAll();
+}
+function addDeal(){
+  const id='new'+Date.now().toString(36);
+  deals.push({id,n:'Nouveau deal',sh:'Nouveau',sp:'',i:'EQ',pr:'Urgent',ds:null,de:null,p:0.5,sz:1.0,t:0,uf:0,pm:0});
+  sel.add(id);savePnl();renderAll();
+}
+function delDeal(id){
+  deals=deals.filter(d=>d.id!==id);sel.delete(id);savePnl();renderAll();
+}
 
 function fmt(n){if(n===0)return'—';if(n>=1000)return(n/1000).toFixed(1)+' M€';return Math.round(n)+' k€'}
 function fmtD(s){if(!s)return'—';return new Date(s).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})}
@@ -203,41 +246,88 @@ function renderKPIs(){
     </div>
   `;}
 
+// État du tri : null = tri par défaut (En exec d'abord, puis Urgent, puis par date)
+let sortState={col:null,dir:1};
+const PR_RANK={'En exec':0,'Urgent':1,'Moyen terme':2,'Moyen':3};
+function sortDeals(){
+  const arr=[...deals];
+  if(sortState.col){
+    const c=sortState.col,dir=sortState.dir;
+    arr.sort((a,b)=>{
+      let va=a[c],vb=b[c];
+      if(c==='ds'){va=va||'9999';vb=vb||'9999';return va<vb?-dir:va>vb?dir:0;}
+      if(c==='pr'){va=PR_RANK[va]??9;vb=PR_RANK[vb]??9;return (va-vb)*dir;}
+      if(typeof va==='number'||c==='sz'||c==='t'||c==='uf'||c==='pm'||c==='p'){return ((va||0)-(vb||0))*dir;}
+      return String(va||'').localeCompare(String(vb||''),'fr')*dir;
+    });
+    return arr;
+  }
+  // défaut : En exec d'abord, puis Urgent, puis par probabilité décroissante
+  arr.sort((a,b)=>{
+    const ra=PR_RANK[a.pr]??9, rb=PR_RANK[b.pr]??9;
+    if(ra!==rb)return ra-rb;
+    return (b.p||0)-(a.p||0);
+  });
+  return arr;
+}
+
 function renderTable(){
-  // Sort: low proba (< 10%) to bottom
-  const sorted=[...deals.filter(d=>d.p>0.10), ...deals.filter(d=>d.p<=0.10)];
+  const sorted=sortDeals();
+  const optI=Object.keys(iL).map(k=>`<option value="${k}">${iL[k]}</option>`).join('');
+  const optPr=['En exec','Urgent','Moyen terme','Moyen'].map(p=>`<option value="${p}">${p}</option>`).join('');
   const rows=sorted.map(d=>{
     const on=sel.has(d.id);
     const isExec=d.pr==='En exec';
     const nameClass=isExec?'exec-name':'urg-name';
     const isLow=d.p<=0.10;
     const rowClass=(isLow?'low-proba':(isExec?'exec-row':'urg-row'))+(on?'':' off');
+    const dsv=d.ds?d.ds:'';
+    // couleur pastille type
+    const pillBg=iC[d.i]||'#888';
     return`<tr class="${rowClass}" data-id="${d.id}">
-      <td><input class="chk" type="checkbox" ${on?'checked':''} data-id="${d.id}" onclick="event.stopPropagation()"></td>
-      <td><span class="pill ${iP[d.i]}">${iL[d.i]}</span></td>
-      <td><span class="${nameClass}">${d.n}</span> <span class="sp-inline">· ${d.sp}</span></td>
-      <td><span class="${isExec?'pr-exec':'pr-urg'}">${d.pr}</span></td>
-      <td class="num" style="color:#777;font-size:11px">${fmtR(d.ds,d.de)}</td>
-      <td class="num" style="font-weight:500">${d.sz.toFixed(d.sz<10?1:0)} M€</td>
-      <td class="num" style="color:#666">${d.t>0?d.t.toFixed(1)+'%':'—'}</td>
-      <td class="num" style="color:#666">${d.uf?d.uf+' k€':'—'}</td>
-      <td class="num" style="color:#666">${d.pm?d.pm+' k€':'—'}</td>
-      <td class="num" style="color:#666">${Math.round(d.p*100)}%</td>
+      <td><input class="chk" type="checkbox" ${on?'checked':''} data-id="${d.id}"></td>
+      <td><select class="ed" data-id="${d.id}" data-f="i" style="width:72px;font-size:9px;font-weight:600;color:#FFF;background-color:${pillBg};border-radius:3px;padding:2px 3px;text-align:center">${optI}</select></td>
+      <td><input class="ed ${nameClass}" data-id="${d.id}" data-f="n" value="${(d.n||'').replace(/"/g,'&quot;')}" style="width:128px"><input class="ed sp-inline" data-id="${d.id}" data-f="sp" value="${(d.sp||'').replace(/"/g,'&quot;')}" placeholder="sponsor" style="width:78px"></td>
+      <td><select class="ed ${isExec?'pr-exec':'pr-urg'}" data-id="${d.id}" data-f="pr" style="width:80px">${optPr}</select></td>
+      <td><input class="ed" type="date" data-id="${d.id}" data-f="ds" value="${dsv}" style="width:112px;color:#777;font-size:10.5px"></td>
+      <td class="num"><input class="ed" data-id="${d.id}" data-f="sz" value="${d.sz}" style="width:40px;text-align:right;font-weight:500"> M€</td>
+      <td class="num"><input class="ed" data-id="${d.id}" data-f="t" value="${d.t}" style="width:34px;text-align:right;color:#666">%</td>
+      <td class="num"><input class="ed" data-id="${d.id}" data-f="uf" value="${d.uf}" style="width:38px;text-align:right;color:#666"> k€</td>
+      <td class="num"><input class="ed" data-id="${d.id}" data-f="pm" value="${d.pm}" style="width:42px;text-align:right;color:#666"> k€</td>
+      <td class="num"><input class="ed" data-id="${d.id}" data-f="p" value="${Math.round(d.p*100)}" style="width:30px;text-align:right;color:#666">%</td>
+      <td style="text-align:center;width:30px"><button class="delDeal" data-id="${d.id}" title="Supprimer">🗑</button></td>
     </tr>`;
   }).join('');
   document.getElementById('tbody').innerHTML=rows;
-  document.querySelectorAll('#tbody tr').forEach(tr=>{
-    tr.addEventListener('click',e=>{
-      if(e.target.tagName==='INPUT')return;
-      const id=tr.dataset.id;
-      const cb=tr.querySelector('input');
-      if(sel.has(id)){sel.delete(id);cb.checked=false}else{sel.add(id);cb.checked=true}
-      renderAll();
-    });
-    tr.querySelector('input').addEventListener('change',e=>{
+  document.querySelectorAll('#tbody select.ed').forEach(s=>{
+    const d=deals.find(x=>x.id===s.dataset.id);if(!d)return;
+    s.value=d[s.dataset.f];
+  });
+  document.querySelectorAll('#tbody input.chk').forEach(cb=>{
+    cb.addEventListener('change',e=>{
       const id=e.target.dataset.id;
       if(e.target.checked)sel.add(id);else sel.delete(id);
       renderAll();
+    });
+  });
+  document.querySelectorAll('#tbody .ed').forEach(inp=>{
+    inp.addEventListener('change',e=>{
+      const id=e.target.dataset.id,f=e.target.dataset.f;
+      const d=deals.find(x=>x.id===id);if(!d)return;
+      let v=e.target.value;
+      if(f==='sz'||f==='t'||f==='uf'||f==='pm'){v=parseFloat(String(v).replace(',','.'));if(isNaN(v))v=0;d[f]=v;}
+      else if(f==='p'){v=parseFloat(String(v).replace(',','.'));if(isNaN(v))v=0;d.p=Math.max(0,Math.min(100,v))/100;}
+      else if(f==='ds'){d.ds=v||null;}
+      else{d[f]=v;}
+      savePnl();renderAll();
+    });
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.type!=='date')e.target.blur();});
+  });
+  document.querySelectorAll('#tbody .delDeal').forEach(b=>{
+    b.addEventListener('click',e=>{
+      const id=e.currentTarget.dataset.id;
+      const d=deals.find(x=>x.id===id);
+      if(confirm('Supprimer le deal « '+(d?d.n:'')+' » ?'))delDeal(id);
     });
   });
 }
@@ -386,7 +476,14 @@ function renderMargin(){
   wrap.innerHTML=g;
 }
 
-function renderAll(){renderKPIs();renderTable();renderTimeline();renderChart();renderMargin()}
+function updateFilterCounts(){
+  const tot=deals.length;
+  const ex=deals.filter(d=>d.pr==='En exec').length;
+  const ur=deals.filter(d=>d.pr==='Urgent').length;
+  const set=(a,txt)=>{const b=document.querySelector('#flt button[data-a="'+a+'"]');if(b)b.textContent=txt;};
+  set('all','Tous ('+tot+')');set('exec','En exec ('+ex+')');set('urgent','Urgent ('+ur+')');
+}
+function renderAll(){renderKPIs();renderTable();renderTimeline();renderChart();renderMargin();updateFilterCounts();updateSortArrows()}
 
 document.getElementById('flt').addEventListener('click',e=>{
   const a=e.target.dataset.a;if(!a)return;
@@ -400,6 +497,64 @@ document.getElementById('flt').addEventListener('click',e=>{
   e.target.classList.add('active');
   renderAll();
 });
+
+const _rb=document.getElementById('resetPnlBtn');
+if(_rb)_rb.addEventListener('click',()=>{if(confirm('Réinitialiser toutes les valeurs aux données d\'origine ? Vos modifications locales seront effacées.'))resetPnl();});
+const _ab=document.getElementById('addDealBtn');
+if(_ab)_ab.addEventListener('click',addDeal);
+
+// --- Bouton Refresh Notion ---
+// Token GitHub fine-grained, portée : ce repo uniquement, permission Actions (write).
+// ATTENTION : visible dans le code source de la page (limite assumée).
+const GH_TOKEN='COLLE_TON_TOKEN_ICI';
+const GH_REPO='rchassard-lang/simulateur-pnl';
+const GH_WORKFLOW='refresh-pnl.yml';
+const _rf=document.getElementById('refreshNotionBtn');
+if(_rf)_rf.addEventListener('click',async()=>{
+  if(GH_TOKEN==='COLLE_TON_TOKEN_ICI'){alert('Token GitHub non configuré dans le fichier.');return;}
+  if(!confirm('Relire les données depuis Notion ? Vos modifications locales seront remplacées par les valeurs Notion.'))return;
+  _rf.disabled=true;const t0=_rf.textContent;
+  try{
+    const r=await fetch(`https://api.github.com/repos/${GH_REPO}/actions/workflows/${GH_WORKFLOW}/dispatches`,{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+GH_TOKEN,'Accept':'application/vnd.github+json','Content-Type':'application/json'},
+      body:JSON.stringify({ref:'main'})
+    });
+    if(r.status!==204)throw new Error('GitHub a répondu '+r.status);
+    let s=75;
+    const tick=setInterval(()=>{
+      s--;_rf.textContent='⟳ Mise à jour… '+s+'s';
+      if(s<=0){
+        clearInterval(tick);
+        try{localStorage.removeItem('cre_pnl_deals');}catch(e){}
+        location.href=location.pathname+'?t='+Date.now();
+      }
+    },1000);
+    _rf.textContent='⟳ Mise à jour… '+s+'s';
+  }catch(e){
+    alert('Échec du déclenchement : '+e.message);
+    _rf.disabled=false;_rf.textContent=t0;
+  }
+});
+
+// Tri par clic sur les en-têtes
+document.querySelectorAll('th.sorth').forEach(th=>{
+  th.addEventListener('click',()=>{
+    const c=th.dataset.col;
+    if(sortState.col===c){sortState.dir=-sortState.dir;}
+    else{sortState.col=c;sortState.dir=1;}
+    renderAll();
+  });
+});
+function updateSortArrows(){
+  document.querySelectorAll('th.sorth').forEach(th=>{
+    const old=th.querySelector('.ar');if(old)old.remove();
+    if(sortState.col===th.dataset.col){
+      const s=document.createElement('span');s.className='ar';s.textContent=sortState.dir===1?'▲':'▼';
+      th.appendChild(s);
+    }
+  });
+}
 
 renderAll();
 </script>
