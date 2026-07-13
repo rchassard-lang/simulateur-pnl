@@ -84,7 +84,7 @@ function serialize(deals) {
 }
 
 function replaceBlock(html, block) {
-  const re = /let deals\s*=\s*\[[\s\S]*?\]\s*;/;
+  const re = /(?:let|const|var)\s+deals\s*=\s*\[[\s\S]*?\]\s*;/;
   if (!re.test(html)) throw new Error("Bloc 'let deals=[...]' introuvable dans index.html");
   return html.replace(re, block);
 }
