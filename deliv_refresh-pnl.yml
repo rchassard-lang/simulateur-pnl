@@ -1,0 +1,42 @@
+name: Refresh P&L depuis Notion
+
+# Déclenchement manuel (bouton "Run workflow" dans l'onglet Actions)
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write   # nécessaire pour committer index.html
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du repo
+        uses: actions/checkout@v4
+
+      - name: Installer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Installer les dépendances
+        run: npm install
+
+      - name: Lancer le refresh
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          DATABASE_ID: 3ae2ffba49b183cabc5d0189ec945309
+        run: node scripts/refresh.mjs
+
+      - name: Committer si changement
+        run: |
+          if [[ -n "$(git status --porcelain index.html)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add index.html
+            git commit -m "Refresh P&L depuis Notion ($(date +'%d/%m/%Y %H:%M'))"
+            git push
+            echo "index.html mis à jour et poussé."
+          else
+            echo "Aucun changement — rien à committer."
+          fi
