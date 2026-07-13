@@ -3,6 +3,8 @@ name: Refresh P&L depuis Notion
 # Déclenchement manuel (bouton "Run workflow" dans l'onglet Actions)
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * *"   # 05:00 UTC = 7h Paris (été) / 6h (hiver)
 
 permissions:
   contents: write   # nécessaire pour committer index.html
