@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulateur P&L — Pipeline Côme RE</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-serif;background:#F5F4F0;color:#1A1A1A;padding:1.5rem;font-size:13px;line-height:1.5}
+.wrap{max-width:960px;margin:0 auto}
+h1{font-size:19px;font-weight:500;margin-bottom:3px}
+.sub{font-size:12px;color:#888;margin-bottom:1.25rem}
+.flt{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.flt button{font-size:11px;padding:5px 11px;border:1px solid #D4D0C8;border-radius:5px;background:#FFF;cursor:pointer;color:#444;transition:all .12s}
+.flt button:hover{background:#EEE}
+.flt button.active{background:#1A1A1A;color:#FFF;border-color:#1A1A1A}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:1.25rem}
+.kpi{background:#FFF;border:1px solid #E5E1D8;border-radius:7px;padding:10px 12px}
+.kpi-l{font-size:9px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.06em}
+.kpi-v{font-size:19px;font-weight:500;margin-top:2px;line-height:1.1}
+.kpi-s{font-size:10px;color:#AAA;margin-top:2px}
+.kpi-mid{font-size:13px;font-weight:400;color:#888;margin-top:3px}
+.kpi-mid-label{font-size:8px;font-weight:600;color:#CCC;text-transform:uppercase;letter-spacing:.05em;margin-top:5px}
+.sec{font-size:9px;font-weight:600;color:#999;margin:.9rem 0 .4rem;text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:8px}
+.sec::after{content:'';flex:1;height:1px;background:#E5E1D8}
+/* TABLE */
+.tbl-wrap{background:#FFF;border:1px solid #E5E1D8;border-radius:8px;overflow:hidden;margin-bottom:.25rem}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+thead{background:#F9F8F5}
+th{padding:6px 8px;text-align:left;font-size:9px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;border-bottom:1px solid #E5E1D8}
+td{padding:5px 8px;border-bottom:1px solid #F0EDE6;vertical-align:middle;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+/* ROW BG PAR PRIORITÉ */
+tr.exec-row td{background:#F2FBF6}
+tr.urg-row td{background:#FDFCF8}
+tr.off td{opacity:.35}
+tr.exec-row:hover td{background:#E8F7EE;cursor:pointer}
+tr.urg-row:hover td{background:#F7F4EE;cursor:pointer}
+tr.exec-row.off:hover td{background:#F2FBF6;cursor:pointer}
+tr.urg-row.off:hover td{background:#FDFCF8;cursor:pointer}
+tr.low-proba td{color:#BBB !important;background:#FAFAFA !important;font-style:italic}
+tr.low-proba:hover td{background:#F5F5F5 !important;cursor:pointer}
+tr.low-proba.off td{opacity:.25}
+/* NOM COULEUR */
+.exec-name{color:#1F7A4D;font-weight:500;font-size:12px}
+.urg-name{color:#9A7020;font-weight:500;font-size:12px}
+.sp-inline{font-size:10.5px;color:#AAA;font-weight:400}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill{display:inline-block;padding:1px 5px;font-size:9px;font-weight:600;border-radius:3px}
+.eq{background:#EAF3FB;color:#1862A0}
+.br{background:#FDF0D8;color:#7A4710}
+.de{background:#EEECFD;color:#3E368E}
+.au{background:#FDEAE4;color:#8A3318}
+.bk{background:#F0EEEB;color:#666}
+.pr-exec{background:#E6F5EE;color:#1B6837;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
+.pr-urg{background:#FDF2E4;color:#8A4A0E;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
+.chk{width:14px;height:14px;cursor:pointer}
+/* TIMELINE */
+.tlbox{background:#FFF;border:1px solid #E5E1D8;border-radius:8px;overflow-x:auto;padding:8px}
+/* CHART */
+.chart-wrap{position:relative;width:100%;min-height:280px;background:#FFF;border:1px solid #E5E1D8;border-radius:8px;padding:12px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:.5rem}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:#888}
+.ls{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.crenav{max-width:960px;margin:0 auto 1rem;display:flex;gap:6px;border-bottom:1px solid #E5E1D8;padding-bottom:0}
+.crenav a{font-size:12px;font-weight:500;padding:8px 16px;text-decoration:none;color:#888;border:1px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;transition:all .12s}
+.crenav a:hover{color:#1A1A1A;background:#EEE}
+.crenav a.active{color:#1A1A1A;background:#FFF;border-color:#E5E1D8;position:relative;top:1px}
+</style>
+</head>
+<body>
+<nav class="crenav">
+  <a href="./" class="active">Suivi P&L</a>
+  <a href="./liquidite/">Déploiement / Liquidité</a>
+</nav>
+<div class="wrap">
+
+<h1>Simulateur P&L — Pipeline commercial</h1>
+<p class="sub">14 deals En exec + Urgent · Côme Real Estate · Cochez les deals à closer, les KPIs et l'agenda s'actualisent.</p>
+
+<div class="flt" id="flt">
+  <button data-a="all" class="active">Tous (14)</button>
+  <button data-a="exec">En exec (6)</button>
+  <button data-a="urgent">Urgent (8)</button>
+  <button data-a="high">Proba ≥75%</button>
+  <button data-a="conservative">Proba ≥50%</button>
+  <button data-a="none">Aucun</button>
+</div>
+
+<div class="kpis" id="kpis"></div>
+
+<div class="sec">Deals</div>
+<div class="tbl-wrap">
+<table id="tbl">
+<thead>
+<tr>
+  <th style="width:26px"></th>
+  <th style="width:70px">Type</th>
+  <th>Deal · Sponsor</th>
+  <th>Priorité</th>
+  <th>Date décaissement</th>
+  <th class="num">Taille</th>
+  <th class="num">TRI</th>
+  <th class="num">Upfront</th>
+  <th class="num">Promote</th>
+  <th class="num">Proba</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<div class="sec">Agenda · taille du rond ∝ montant</div>
+<div class="legend">
+  <span class="li"><span class="ls" style="background:#378ADD"></span>Equity</span>
+  <span class="li"><span class="ls" style="background:#BA7517"></span>Bridge Senior</span>
+  <span class="li"><span class="ls" style="background:#7F77DD"></span>Demeures</span>
+  <span class="li"><span class="ls" style="background:#D85A30"></span>Autre</span>
+  <span class="li"><span class="ls" style="background:#2D9B7D"></span>Broker</span>
+  <span class="li" style="margin-left:8px"><span style="display:inline-block;width:18px;height:2px;background:#1F7A4D;margin-right:5px;vertical-align:middle"></span>Aujourd'hui</span>
+</div>
+<div class="tlbox"><svg id="tl" viewBox="0 0 880 380" style="width:100%;min-width:600px;height:380px"></svg></div>
+
+<div class="sec" style="margin-top:1.1rem">P&L par deal · k€ · upfront (plein) + promote (transparent)</div>
+<div class="legend">
+  <span class="li"><span class="ls" style="background:#378ADD"></span>Equity — upfront</span>
+  <span class="li"><span class="ls" style="background:#378ADD;opacity:.4"></span>Equity — promote</span>
+</div>
+<div id="pnl-svg-wrap" style="background:#FFF;border:1px solid #E5E1D8;border-radius:8px;padding:12px 12px 6px"></div>
+
+
+
+<div class="sec" style="margin-top:1.1rem">Marge par deal — P&L brut / Notionnel (%)</div>
+<div id="margin-wrap" style="background:#FFF;border:1px solid #E5E1D8;border-radius:8px;padding:12px 12px 6px"></div>
+
+</div>
+
+<script>
+const deals=[
+  {id:'j50',n:'Paris — 50 Jacob',sh:'50 Jacob',sp:'CinqTerre',i:'DE',pr:'En exec',ds:'2026-06-30',de:null,p:1.0,sz:0.88,t:17.7,uf:15,pm:0},
+  {id:'fb26',n:'Paris — 26 Francs Bourgeois',sh:'26 Francs Bgs',sp:'CinqTerre',i:'DE',pr:'En exec',ds:'2026-06-30',de:null,p:1.0,sz:0.785,t:19.7,uf:13,pm:0},
+  {id:'am',n:'Aigues-Mortes - Meublé de tourisme',sh:'Aigues-Mortes',sp:'Kintsugi RE',i:'EQ',pr:'En exec',ds:'2026-07-01',de:null,p:0.95,sz:1.199,t:17.0,uf:72,pm:187},
+  {id:'mb',n:'Moncey — Brokerage',sh:'Moncey Brok.',sp:'Barnes AM',i:'BK',pr:'En exec',ds:'2026-09-15',de:null,p:0.95,sz:18.0,t:0,uf:225,pm:0},
+  {id:'lit',n:'Litigation',sh:'Litigation',sp:'Eskariam Advisors / Victory Park',i:'AU',pr:'Urgent',ds:'2026-06-30',de:'2026-09-15',p:0.75,sz:10.0,t:0,uf:400,pm:800},
+  {id:'cy',n:'Sandton — Portefeuille Cayman',sh:'Sandton-Cayman',sp:'Sandton / Cayman Group',i:'EQ',pr:'Urgent',ds:'2026-07-15',de:null,p:0.10,sz:5.0,t:0,uf:250,pm:0},
+  {id:'ms',n:'Marseille - Breuteil',sh:'Breuteil',sp:'Kintsugi RE',i:'EQ',pr:'Urgent',ds:'2026-11-02',de:'2027-01-11',p:0.75,sz:4.73,t:13.6,uf:284,pm:315},
+  {id:'sj',n:'Saint-Jorioz - Annecy',sh:'Saint-Jorioz',sp:'Coco AM',i:'EQ',pr:'Urgent',ds:'2026-12-01',de:'2027-02-15',p:0.75,sz:5.0,t:12.3,uf:300,pm:434},
+  {id:'lr',n:'La Rochelle - Le Rupella',sh:'La Rochelle',sp:'Coco AM',i:'EQ',pr:'Urgent',ds:'2026-08-01',de:'2026-09-30',p:0.80,sz:1.5,t:11.35,uf:90,pm:76},
+  {id:'lg',n:'Les Gets - L\'Ecrin',sh:'Les Gets',sp:'Macber / Chamoue Promotion',i:'EQ',pr:'Urgent',ds:'2026-09-01',de:null,p:0.50,sz:1.6,t:15.0,uf:96,pm:407},
+  {id:'nt',n:'Nanterre - Padel',sh:'Nanterre',sp:'Cyril Laborde',i:'EQ',pr:'Urgent',ds:null,de:null,p:0.50,sz:2.922,t:15.0,uf:175,pm:1038},
+  {id:'sj2',n:'Saint-James - Parkings Bd Raspail',sh:'Saint-James',sp:'Financière Saint-James',i:'BR',pr:'Urgent',ds:'2026-09-15',de:null,p:0.25,sz:13.0,t:0,uf:0,pm:0},
+  {id:'fm',n:'Paris 04 - 15 François Miron',sh:'François Miron',sp:'Côme / Direct',i:'EQ',pr:'Urgent',ds:null,de:null,p:0,sz:10.0,t:0,uf:0,pm:0},
+  {id:'pu',n:'Datacenter - Puteaux — Le Capitole ⚠',sh:'DC Puteaux ⚠',sp:'Mameri / Firce',i:'BR',pr:'Urgent',ds:null,de:null,p:0.10,sz:180.0,t:0,uf:0,pm:0}
+];
+const iC={EQ:'#378ADD',BR:'#BA7517',DE:'#7F77DD',AU:'#D85A30',BK:'#2D9B7D'};
+const iL={EQ:'Equity',BR:'Bridge SR',DE:'Demeures',AU:'Autre',BK:'Broker'};
+const iP={EQ:'eq',BR:'br',DE:'de',AU:'au',BK:'bk'};
+let sel=new Set(deals.map(d=>d.id));
+
+function fmt(n){if(n===0)return'—';if(n>=1000)return(n/1000).toFixed(1)+' M€';return Math.round(n)+' k€'}
+function fmtD(s){if(!s)return'—';return new Date(s).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})}
+function fmtR(ds,de){if(!ds)return'sans date';return de?fmtD(ds)+' → '+fmtD(de):fmtD(ds)}
+
+function calc(){
+  const s=deals.filter(d=>sel.has(d.id));
+  const uf=s.reduce((a,d)=>a+d.uf,0);
+  const pm=s.reduce((a,d)=>a+d.pm,0);
+  const pmW=s.reduce((a,d)=>a+d.pm*d.p,0);
+  const sz=s.reduce((a,d)=>a+d.sz,0);
+  const tn=s.reduce((a,d)=>d.t>0?a+d.t*d.sz:a,0);
+  const td=s.reduce((a,d)=>d.t>0?a+d.sz:a,0);
+  const p26=s.reduce((a,d)=>{const y=d.ds?new Date(d.ds).getFullYear():2026;return y===2026?a+d.uf+d.pm*d.p:a},0);
+  const p27=s.reduce((a,d)=>{const y=d.ds?new Date(d.ds).getFullYear():2026;return y===2027?a+d.uf+d.pm*d.p:a},0);
+  const ufPond=s.reduce((a,d)=>a+d.uf*d.p,0);
+  const szSec=s.reduce((a,d)=>d.pr==='En exec'?a+d.sz:a,0);
+  const ufSec=s.reduce((a,d)=>d.pr==='En exec'?a+d.uf:a,0);
+  const pmSec=s.reduce((a,d)=>d.pr==='En exec'?a+d.pm:a,0);
+  const pnlSec=ufSec+pmSec;
+  return{n:s.length,sz,szSec,uf,ufPond,ufSec,pm,pmW,pmSec,pnlBrut:uf+pm,pnlPond:uf+pmW,pnlSec,tri:td>0?tn/td:0};
+}
+
+function renderKPIs(){
+  const k=calc();
+  document.getElementById('kpis').innerHTML=`
+    <div class="kpi"><div class="kpi-l">Deals</div><div class="kpi-v">${k.n}<span style="font-size:12px;color:#CCC"> /14</span></div></div>
+    <div class="kpi"><div class="kpi-l">Notionnel</div><div class="kpi-v">${k.sz.toFixed(1)} M€</div><div class="kpi-s" style="color:#888;font-size:12px">Sécurisé ${k.szSec.toFixed(1)} M€</div><div class="kpi-s" style="color:#555;font-size:12px">À lever ${(k.sz-k.szSec).toFixed(1)} M€</div></div>
+    <div class="kpi">
+      <div class="kpi-l">Upfront</div>
+      <div class="kpi-v">${fmt(k.uf)}</div>
+      <div class="kpi-s" style="color:#888;font-size:12px">Sécurisé ${fmt(k.ufSec)}</div>
+      <div class="kpi-s" style="color:#555;font-size:12px">Prob. ${fmt(k.ufPond)}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">Promote</div>
+      <div class="kpi-v">${fmt(k.pm)}</div>
+      <div class="kpi-s" style="color:#888;font-size:12px">Sécurisé ${fmt(k.pmSec)}</div>
+      <div class="kpi-s" style="color:#555;font-size:12px">Prob. ${fmt(k.pmW)}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">P&L Total</div>
+      <div class="kpi-v">${fmt(k.pnlBrut)}</div>
+      <div class="kpi-s" style="color:#888;font-size:12px">Sécurisé ${fmt(k.pnlSec)}</div>
+      <div class="kpi-s" style="color:#555;font-size:12px">Prob. ${fmt(k.pnlPond)}</div>
+    </div>
+  `;}
+
+function renderTable(){
+  // Sort: low proba (< 10%) to bottom
+  const sorted=[...deals.filter(d=>d.p>0.10), ...deals.filter(d=>d.p<=0.10)];
+  const rows=sorted.map(d=>{
+    const on=sel.has(d.id);
+    const isExec=d.pr==='En exec';
+    const nameClass=isExec?'exec-name':'urg-name';
+    const isLow=d.p<=0.10;
+    const rowClass=(isLow?'low-proba':(isExec?'exec-row':'urg-row'))+(on?'':' off');
+    return`<tr class="${rowClass}" data-id="${d.id}">
+      <td><input class="chk" type="checkbox" ${on?'checked':''} data-id="${d.id}" onclick="event.stopPropagation()"></td>
+      <td><span class="pill ${iP[d.i]}">${iL[d.i]}</span></td>
+      <td><span class="${nameClass}">${d.n}</span> <span class="sp-inline">· ${d.sp}</span></td>
+      <td><span class="${isExec?'pr-exec':'pr-urg'}">${d.pr}</span></td>
+      <td class="num" style="color:#777;font-size:11px">${fmtR(d.ds,d.de)}</td>
+      <td class="num" style="font-weight:500">${d.sz.toFixed(d.sz<10?1:0)} M€</td>
+      <td class="num" style="color:#666">${d.t>0?d.t.toFixed(1)+'%':'—'}</td>
+      <td class="num" style="color:#666">${d.uf?d.uf+' k€':'—'}</td>
+      <td class="num" style="color:#666">${d.pm?d.pm+' k€':'—'}</td>
+      <td class="num" style="color:#666">${Math.round(d.p*100)}%</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('tbody').innerHTML=rows;
+  document.querySelectorAll('#tbody tr').forEach(tr=>{
+    tr.addEventListener('click',e=>{
+      if(e.target.tagName==='INPUT')return;
+      const id=tr.dataset.id;
+      const cb=tr.querySelector('input');
+      if(sel.has(id)){sel.delete(id);cb.checked=false}else{sel.add(id);cb.checked=true}
+      renderAll();
+    });
+    tr.querySelector('input').addEventListener('change',e=>{
+      const id=e.target.dataset.id;
+      if(e.target.checked)sel.add(id);else sel.delete(id);
+      renderAll();
+    });
+  });
+}
+
+function renderTimeline(){
+  const svg=document.getElementById('tl');
+  const months=['Mai','Juin','Juil','Août','Sept','Oct','Nov','Déc','Jan 27','Fév 27'];
+  const startD=new Date('2026-05-01'),endD=new Date('2027-03-01');
+  const range=endD-startD;
+  const W=880,H=380,pL=52,pR=20,pT=40,pB=36;
+  const iW=W-pL-pR;
+  function xp(d){return pL+((new Date(d)-startD)/range)*iW}
+  let s='';
+  for(let i=0;i<=months.length;i++){
+    const xx=(pL+(i/months.length)*iW).toFixed(1);
+    s+=`<line x1="${xx}" y1="${pT}" x2="${xx}" y2="${H-pB}" stroke="#E8E4DC" stroke-width="0.5"/>`;
+    if(i<months.length){
+      const mx=(pL+((i+0.5)/months.length)*iW).toFixed(1);
+      s+=`<text x="${mx}" y="${H-pB+16}" text-anchor="middle" font-size="10" fill="#BBB" font-family="-apple-system,sans-serif">${months[i]}</text>`;
+    }
+  }
+  const today=new Date('2026-05-19');
+  if(today>=startD&&today<=endD){
+    const tx=xp(today).toFixed(1);
+    s+=`<line x1="${tx}" y1="${pT}" x2="${tx}" y2="${H-pB}" stroke="#1F7A4D" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.8"/>`;
+    s+=`<text x="${(parseFloat(tx)+4).toFixed(1)}" y="${pT-8}" font-size="9" fill="#1F7A4D" font-family="-apple-system,sans-serif" font-weight="600">auj.</text>`;
+  }
+  const dwd=deals.filter(d=>d.ds&&sel.has(d.id));
+  if(!dwd.length){
+    s+=`<text x="${W/2}" y="${H/2+5}" text-anchor="middle" font-size="13" fill="#CCC" font-family="-apple-system,sans-serif">Aucun deal avec une date sélectionné</text>`;
+    svg.innerHTML=s;return;
+  }
+  const rv=sz=>Math.round(7+17*Math.sqrt(Math.min(sz,20)/20));
+  dwd.sort((a,b)=>new Date(a.ds)-new Date(b.ds));
+  const lanes=[];
+  dwd.forEach(d=>{
+    const sx=xp(d.ds),ex=d.de?xp(d.de):sx,r=rv(d.sz);
+    let li=0;
+    while(li<7){
+      const lane=lanes[li]||[];
+      const conflict=lane.some(it=>!(it.ex<sx-r*2.2||it.sx>ex+r*2.2));
+      if(!conflict){lanes[li]=lane;lanes[li].push({sx,ex});break}
+      li++;
+    }
+    d._l=Math.min(li,6);
+  });
+  const nLanes=Math.max(1,...dwd.map(d=>d._l+1));
+  const lh=(H-pT-pB)/Math.max(nLanes,4);
+  dwd.forEach(d=>{
+    const sx=xp(d.ds),ex=d.de?xp(d.de):sx;
+    const cy=pT+(d._l+0.5)*lh;
+    const r=rv(d.sz);
+    const c=iC[d.i];
+    if(d.de){
+      s+=`<line x1="${sx.toFixed(1)}" y1="${cy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${cy.toFixed(1)}" stroke="${c}" stroke-width="2.5" opacity="0.45"/>`;
+      s+=`<circle cx="${ex.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(r*0.5).toFixed(1)}" fill="${c}" stroke="white" stroke-width="1.5" opacity="0.5"/>`;
+    }
+    s+=`<circle cx="${sx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="${c}" stroke="white" stroke-width="2" opacity="0.92"/>`;
+    if(r>=11){
+      const fs=Math.min(10,Math.floor(r*0.52));
+      const lbl=d.sz>=10?Math.round(d.sz)+'M':d.sz.toFixed(1)+'M';
+      s+=`<text x="${sx.toFixed(1)}" y="${cy.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="${fs}" fill="white" font-weight="600" font-family="-apple-system,sans-serif">${lbl}</text>`;
+    } else {
+      const lbl=d.sz.toFixed(1)+'M';
+      s+=`<text x="${sx.toFixed(1)}" y="${(cy+r+13).toFixed(1)}" text-anchor="middle" font-size="9" fill="#888" font-family="-apple-system,sans-serif">${lbl}</text>`;
+    }
+    const nameCol=d.pr==='En exec'?'#1F7A4D':'#1A1A1A';
+    s+=`<text x="${sx.toFixed(1)}" y="${(cy-r-5).toFixed(1)}" text-anchor="middle" font-size="10" fill="${nameCol}" font-weight="600" font-family="-apple-system,sans-serif">${d.sh}</text>`;
+  });
+  svg.innerHTML=s;
+}
+
+function renderChart(){
+  const s=deals.filter(d=>sel.has(d.id));
+  const wrap=document.getElementById('pnl-svg-wrap');
+  if(!s.length){wrap.innerHTML='<p style="color:#CCC;text-align:center;padding:2rem;font-size:13px">Aucun deal sélectionné</p>';return}
+  const ROW=36,pL=130,pR=60,pT=10,pB=28;
+  const W=wrap.offsetWidth||820;
+  const H=s.length*ROW+pT+pB;
+  const maxV=Math.max(10,...s.map(d=>d.uf+d.pm));
+  const iW=W-pL-pR;
+  function bw(v){return Math.max(0,(v/maxV)*iW)}
+  const TICKS=4;
+  let g=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}">`;
+  for(let i=0;i<=TICKS;i++){
+    const x=pL+(i/TICKS)*iW;
+    const v=Math.round((i/TICKS)*maxV);
+    g+=`<line x1="${x.toFixed(0)}" y1="${pT}" x2="${x.toFixed(0)}" y2="${H-pB}" stroke="#EAE7E0" stroke-width="0.5"/>`;
+    g+=`<text x="${x.toFixed(0)}" y="${H-pB+14}" text-anchor="middle" font-size="10" fill="#BBB" font-family="-apple-system,sans-serif">${v} k€</text>`;
+  }
+  s.forEach((d,i)=>{
+    const y=pT+i*ROW;
+    const cy=y+ROW/2;
+    const c=iC[d.i];
+    const uw=bw(d.uf),pw=bw(d.pm);
+    const nc=d.pr==='En exec'?'#1F7A4D':'#9A7020';
+    g+=`<text x="${pL-7}" y="${cy+4}" text-anchor="end" font-size="11" fill="${nc}" font-weight="500" font-family="-apple-system,sans-serif">${d.sh}</text>`;
+    if(uw>0){
+      g+=`<rect x="${pL}" y="${cy-11}" width="${uw.toFixed(1)}" height="14" rx="2" fill="${c}" opacity="0.92"/>`;
+      if(d.pm>0 && uw>28){const ufl=String(d.uf)+' k€';const ufs=Math.min(10,Math.max(7,Math.floor(uw/(ufl.length*6.2))));g+=`<text x="${(pL+uw/2).toFixed(0)}" y="${cy-4}" dominant-baseline="middle" text-anchor="middle" font-size="${ufs}" fill="#CCC" font-family="-apple-system,sans-serif">${ufl}</text>`;}
+    }
+    if(pw>0){
+      g+=`<rect x="${(pL+uw).toFixed(1)}" y="${cy-11}" width="${pw.toFixed(1)}" height="14" rx="2" fill="${c}" opacity="0.4"/>`;
+      if(pw>28){const pml=String(d.pm)+' k€';const pfs=Math.min(10,Math.max(7,Math.floor(pw/(pml.length*6.2))));g+=`<text x="${(pL+uw+pw/2).toFixed(0)}" y="${cy-4}" dominant-baseline="middle" text-anchor="middle" font-size="${pfs}" fill="#777" font-family="-apple-system,sans-serif">${pml}</text>`;}
+    }
+    const tot=d.uf+d.pm;
+    if(tot>0) g+=`<text x="${(pL+uw+pw+6).toFixed(0)}" y="${cy-4}" dominant-baseline="middle" text-anchor="start" font-size="11" font-weight="600" fill="#1A1A1A" font-family="-apple-system,sans-serif">${tot} k€</text>`;
+    if(i<s.length-1) g+=`<line x1="${pL}" y1="${y+ROW}" x2="${(pL+iW).toFixed(0)}" y2="${y+ROW}" stroke="#F0EDE6" stroke-width="0.5"/>`;
+  });
+  g+='</svg>';
+  wrap.innerHTML=g;
+}
+
+
+function renderMargin(){
+  const s=deals.filter(d=>sel.has(d.id));
+  const wrap=document.getElementById('margin-wrap');
+  if(!s.length){wrap.innerHTML='<p style="color:#CCC;text-align:center;padding:2rem;font-size:13px">Aucun deal sélectionné</p>';return}
+  // margin % = (uf + pm) / (sz * 1000) * 100
+  const withM=s.map(d=>({...d,marg:d.sz>0?(d.uf+d.pm)/(d.sz*1000)*100:0}));
+  withM.sort((a,b)=>b.marg-a.marg);
+  const W=880,ROW=34,pL=130,pR=80,pT=10,pB=28;
+  const H=withM.length*ROW+pT+pB;
+  const maxM=Math.max(1,...withM.map(d=>d.marg));
+  const iW=W-pL-pR;
+  function bw(m){return Math.max(0,(m/maxM)*iW)}
+  const TICKS=5;
+  let g=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}">`;
+  for(let i=0;i<=TICKS;i++){
+    const x=pL+(i/TICKS)*iW,v=(i/TICKS*maxM).toFixed(1);
+    g+=`<line x1="${x.toFixed(0)}" y1="${pT}" x2="${x.toFixed(0)}" y2="${H-pB}" stroke="#EAE7E0" stroke-width="0.5"/>`;
+    g+=`<text x="${x.toFixed(0)}" y="${H-pB+14}" text-anchor="middle" font-size="10" fill="#BBB" font-family="-apple-system,sans-serif">${v}%</text>`;
+  }
+  withM.forEach((d,i)=>{
+    const y=pT+i*ROW,cy=y+ROW/2;
+    const c=iC[d.i],bwidth=bw(d.marg);
+    const nc=d.pr==='En exec'?'#1F7A4D':'#9A7020';
+    g+=`<text x="${pL-7}" y="${cy}" dominant-baseline="middle" text-anchor="end" font-size="11" fill="${nc}" font-weight="500" font-family="-apple-system,sans-serif">${d.sh}</text>`;
+    if(bwidth>0) g+=`<rect x="${pL}" y="${cy-11}" width="${bwidth.toFixed(1)}" height="14" rx="2" fill="${c}" opacity="0.88"/>`;
+    const lbl=d.marg.toFixed(1)+'%';
+    if(bwidth>32) g+=`<text x="${(pL+bwidth/2).toFixed(0)}" y="${cy}" dominant-baseline="middle" text-anchor="middle" font-size="9" fill="white" font-family="-apple-system,sans-serif">${lbl}</text>`;
+    g+=`<text x="${(pL+bwidth+6).toFixed(0)}" y="${cy}" dominant-baseline="middle" text-anchor="start" font-size="11" font-weight="600" fill="#1A1A1A" font-family="-apple-system,sans-serif">${lbl}</text>`;
+    if(i<withM.length-1) g+=`<line x1="${pL}" y1="${y+ROW}" x2="${(pL+iW).toFixed(0)}" y2="${y+ROW}" stroke="#F0EDE6" stroke-width="0.5"/>`;
+  });
+  g+='</svg>';
+  wrap.innerHTML=g;
+}
+
+function renderAll(){renderKPIs();renderTable();renderTimeline();renderChart();renderMargin()}
+
+document.getElementById('flt').addEventListener('click',e=>{
+  const a=e.target.dataset.a;if(!a)return;
+  if(a==='all')sel=new Set(deals.map(d=>d.id));
+  else if(a==='none')sel=new Set();
+  else if(a==='exec')sel=new Set(deals.filter(d=>d.pr==='En exec').map(d=>d.id));
+  else if(a==='urgent')sel=new Set(deals.filter(d=>d.pr==='Urgent').map(d=>d.id));
+  else if(a==='high')sel=new Set(deals.filter(d=>d.p>=0.75).map(d=>d.id));
+  else if(a==='conservative')sel=new Set(deals.filter(d=>d.p>=0.50).map(d=>d.id));
+  document.querySelectorAll('#flt button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  renderAll();
+});
+
+renderAll();
+</script>
+</body>
+</html>
