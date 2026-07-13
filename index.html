@@ -504,37 +504,11 @@ const _ab=document.getElementById('addDealBtn');
 if(_ab)_ab.addEventListener('click',addDeal);
 
 // --- Bouton Refresh Notion ---
-// Token GitHub fine-grained, portée : ce repo uniquement, permission Actions (write).
-// ATTENTION : visible dans le code source de la page (limite assumée).
-const GH_TOKEN='COLLE_TON_TOKEN_ICI';
-const GH_REPO='rchassard-lang/simulateur-pnl';
-const GH_WORKFLOW='refresh-pnl.yml';
+// Le refresh tourne automatiquement chaque matin (workflow programmé).
+// Ce bouton ouvre la page GitHub Actions pour forcer un refresh manuel (aucun secret dans la page).
 const _rf=document.getElementById('refreshNotionBtn');
-if(_rf)_rf.addEventListener('click',async()=>{
-  if(GH_TOKEN==='COLLE_TON_TOKEN_ICI'){alert('Token GitHub non configuré dans le fichier.');return;}
-  if(!confirm('Relire les données depuis Notion ? Vos modifications locales seront remplacées par les valeurs Notion.'))return;
-  _rf.disabled=true;const t0=_rf.textContent;
-  try{
-    const r=await fetch(`https://api.github.com/repos/${GH_REPO}/actions/workflows/${GH_WORKFLOW}/dispatches`,{
-      method:'POST',
-      headers:{'Authorization':'Bearer '+GH_TOKEN,'Accept':'application/vnd.github+json','Content-Type':'application/json'},
-      body:JSON.stringify({ref:'main'})
-    });
-    if(r.status!==204)throw new Error('GitHub a répondu '+r.status);
-    let s=75;
-    const tick=setInterval(()=>{
-      s--;_rf.textContent='⟳ Mise à jour… '+s+'s';
-      if(s<=0){
-        clearInterval(tick);
-        try{localStorage.removeItem('cre_pnl_deals');}catch(e){}
-        location.href=location.pathname+'?t='+Date.now();
-      }
-    },1000);
-    _rf.textContent='⟳ Mise à jour… '+s+'s';
-  }catch(e){
-    alert('Échec du déclenchement : '+e.message);
-    _rf.disabled=false;_rf.textContent=t0;
-  }
+if(_rf)_rf.addEventListener('click',()=>{
+  window.open('https://github.com/rchassard-lang/simulateur-pnl/actions/workflows/refresh-pnl.yml','_blank');
 });
 
 // Tri par clic sur les en-têtes
