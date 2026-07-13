@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex, nofollow"/>
+<title>CRE — Simulateur de liquidité</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#faf9f5;--surface1:#f1efe8;--surface2:#fff;--border:#d3d1c7;--border-strong:#b4b2a9;
+  --text:#2c2c2a;--text2:#5f5e5a;--text3:#888780;--accent:#185fa5;--danger:#a32d2d;--radius:8px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.6}
+.wrap{max-width:900px;margin:0 auto;padding:2rem 1.25rem}
+h1{font-size:22px;font-weight:500;margin:0 0 0.25rem}
+.sub{color:var(--text2);font-size:14px;margin:0 0 1.5rem}
+input,select,button{font-family:inherit;border:0.5px solid var(--border-strong);border-radius:var(--radius);background:var(--surface2);color:var(--text);padding:0 8px}
+input:focus,select:focus{outline:none;box-shadow:0 0 0 2px rgba(24,95,165,0.25)}
+button{cursor:pointer;background:transparent;transition:background .12s}
+button:hover{background:var(--surface1)}
+button:active{transform:scale(0.98)}
+.cards{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:1rem}
+.card{background:var(--surface1);border-radius:var(--radius);padding:0.75rem 1rem;flex:1;min-width:130px}
+.card p.l{font-size:13px;color:var(--text2);margin:0 0 2px}
+.card p.v{font-size:20px;font-weight:500;margin:0}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;color:var(--text2)}
+.legend span{display:flex;align-items:center;gap:5px}
+.sw{width:11px;height:11px;border-radius:2px}
+.chartbox{position:relative;width:100%;height:420px;margin-bottom:1.5rem}
+table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+th{background:var(--surface1);text-align:left;padding:8px 5px;font-weight:500}
+.sortH{cursor:pointer;user-select:none}
+.tablewrap{overflow:hidden;border:0.5px solid var(--border);border-radius:12px}
+.note{font-size:11px;color:var(--text3);margin-top:10px;font-style:italic}
+.bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.arr{color:var(--accent)}
+.gate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:10}
+.gate .box{background:var(--surface2);border:0.5px solid var(--border);border-radius:12px;padding:2rem;max-width:340px;width:90%;text-align:center}
+.gate h2{font-size:18px;font-weight:500;margin:0 0 0.5rem}
+.gate p{font-size:13px;color:var(--text2);margin:0 0 1.25rem}
+.gate input{height:40px;width:100%;font-size:15px;margin-bottom:0.75rem;padding:0 12px}
+.gate button{height:40px;width:100%;background:var(--accent);color:#fff;border:none;font-size:15px;font-weight:500}
+.gate .err{color:var(--danger);font-size:12px;min-height:16px;margin-top:4px}
+.hidden{display:none}
+.crenav{max-width:900px;margin:0 auto 1rem;display:flex;gap:6px;border-bottom:0.5px solid var(--border);padding:0 1.25rem}
+.crenav a{font-size:13px;font-weight:500;padding:9px 16px;text-decoration:none;color:var(--text2);border:0.5px solid transparent;border-bottom:none;border-radius:8px 8px 0 0;transition:all .12s}
+.crenav a:hover{color:var(--text);background:var(--surface1)}
+.crenav a.active{color:var(--text);background:var(--surface2);border-color:var(--border);position:relative;top:0.5px}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="box">
+    <h2>Accès restreint</h2>
+    <p>Simulateur de liquidité CRE. Entre le mot de passe pour consulter.</p>
+    <input type="password" id="pw" placeholder="Mot de passe" autocomplete="off"/>
+    <button id="pwBtn">Accéder</button>
+    <div class="err" id="pwErr"></div>
+  </div>
+</div>
+
+<div class="wrap hidden" id="app">
+<nav class="crenav">
+  <a href="../">Suivi P&L</a>
+  <a href="./" class="active">Déploiement / Liquidité</a>
+</nav>
+<h1>CRE — Simulateur de liquidité</h1>
+<p class="sub">Frise de trésorerie et cash net cumulé par quinzaine. Édite, coche, trie, glisse.</p>
+
+<div class="cards">
+  <div class="card"><p class="l">Cash net final</p><p class="v" id="statFinal">—</p></div>
+  <div class="card"><p class="l">Creux minimal</p><p class="v" id="statCreux">—</p></div>
+</div>
+
+<div class="legend">
+  <span><span class="sw" style="background:#9FE1CB"></span>Entrée</span>
+  <span><span class="sw" style="background:#F5C4B3"></span>Sortie CRE</span>
+  <span><span class="sw" style="background:#F7C1C1"></span>Sortie FOST</span>
+  <span><span class="sw" style="width:14px;height:3px;background:#185FA5"></span>Cash net</span>
+</div>
+
+<div class="chartbox"><canvas id="friseCanvas"></canvas></div>
+
+<div class="bar">
+  <p style="font-size:14px;font-weight:500;margin:0">Lignes — clique un en-tête pour trier, glisse pour réordonner</p>
+  <div style="display:flex;gap:8px">
+    <button id="addEntree" style="font-size:13px;height:32px;padding:0 12px">+ Entrée</button>
+    <button id="addSortie" style="font-size:13px;height:32px;padding:0 12px">+ Sortie</button>
+  </div>
+</div>
+
+<div class="tablewrap">
+<table>
+  <thead><tr>
+    <th style="width:24px;padding:8px 2px"></th>
+    <th style="width:30px;padding:8px 3px"></th>
+    <th class="sortH" data-k="name" style="padding:8px 8px">Deal <span class="arr"></span></th>
+    <th class="sortH" data-k="amount" style="width:82px">M€ <span class="arr"></span></th>
+    <th class="sortH" data-k="period" style="width:100px">Échéance <span class="arr"></span></th>
+    <th class="sortH" data-k="prov" style="width:62px">Origine <span class="arr"></span></th>
+    <th class="sortH" data-k="dir" style="width:60px">Sens <span class="arr"></span></th>
+    <th style="width:28px;padding:8px 3px"></th>
+  </tr></thead>
+  <tbody id="rowsBody"></tbody>
+</table>
+</div>
+<p class="note">Trié CRE puis FOST, puis par date. Montants à deux décimales. Courbe bleue = cash net cumulé des lignes cochées. Données sauvegardées localement sur cet appareil.</p>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+// --- gate ---
+var PASS='cre2026';
+var gate=document.getElementById('gate'),app=document.getElementById('app');
+function unlock(){gate.classList.add('hidden');app.classList.remove('hidden');if(!window._init){window._init=true;init();}}
+if(sessionStorage.getItem('cre_liq_ok')==='1'){unlock();}
+document.getElementById('pwBtn').onclick=function(){
+  if(document.getElementById('pw').value===PASS){sessionStorage.setItem('cre_liq_ok','1');unlock();}
+  else{document.getElementById('pwErr').textContent='Mot de passe incorrect.';}
+};
+document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('pwBtn').click();});
+
+function init(){
+const PERIODS=['Mi-juillet','Début août','Mi-août','Début sept.','Mi-sept.','Début oct.','Mi-oct.'];
+const COL={entree:'#9FE1CB',cre:'#F5C4B3',fost:'#F7C1C1'};
+
+const DEFAULT=[
+  {name:'Cash initial',amount:7.1,period:0,dir:'in',prov:'CRE',on:true,fixed:true},
+  {name:'Nativel 200 + Benois S. 400 + Arnaud 200',amount:0.8,period:1,dir:'in',prov:'CRE',on:true},
+  {name:'S Robic potentiel',amount:1.0,period:3,dir:'in',prov:'CRE',on:true},
+  {name:'ChapterOne_StBarth (fonds + ether => 1 mois ine)',amount:1.5,period:1,dir:'out',prov:'CRE',on:true},
+  {name:'Litigation',amount:1.0,period:3,dir:'out',prov:'CRE',on:true},
+  {name:'Artea_Strasbourg (+ Ether & Eric)',amount:1.5,period:1,dir:'out',prov:'CRE',on:true},
+  {name:'Worldia',amount:1.5,period:3,dir:'out',prov:'FOST',on:true},
+  {name:'Saint Honoré',amount:1.9,period:3,dir:'out',prov:'FOST',on:true},
+  {name:'Sterling / VTC',amount:0.0,period:1,dir:'out',prov:'FOST',on:true},
+  {name:'Copyright',amount:0.5,period:3,dir:'out',prov:'FOST',on:true}
+];
+
+let rows;
+try{const s=localStorage.getItem('cre_liq_rows_v2');rows=s?JSON.parse(s):JSON.parse(JSON.stringify(DEFAULT));}catch(e){rows=JSON.parse(JSON.stringify(DEFAULT));}
+// garantir qu'une ligne cash fixe existe toujours, en tête
+if(!rows.some(r=>r.fixed)){rows.unshift({name:'Cash initial',amount:7.1,period:0,dir:'in',prov:'CRE',on:true,fixed:true});}
+rows.sort((a,b)=>(b.fixed?1:0)-(a.fixed?1:0)===0?0:(a.fixed?-1:1));
+
+function save(){try{localStorage.setItem('cre_liq_rows_v2',JSON.stringify(rows));}catch(e){}}
+
+let sortKey=null,sortDir=1;
+function fmt(v){const r=Math.round(v*100)/100;return (r<0?'-':'')+Math.abs(r).toFixed(2).replace('.',',')+'M€';}
+function segColor(r){return r.dir==='in'?COL.entree:(r.prov==='FOST'?COL.fost:COL.cre);}
+
+let chart;
+function computeSeries(){
+  let cash=0;const line=[];
+  for(let p=0;p<PERIODS.length;p++){
+    rows.forEach(r=>{if(!r.on||r.period!==p)return;cash+=(r.dir==='in'?1:-1)*r.amount;});
+    line.push(Math.round(cash*100)/100);
+  }
+  return line;
+}
+const barAnnot={id:'barAnnot',afterDatasetsDraw(c){
+  const ctx=c.ctx;ctx.save();ctx.textAlign='center';
+  c.data.datasets.forEach((ds,di)=>{
+    if(ds.type==='line'||!ds._deal)return;
+    const meta=c.getDatasetMeta(di);
+    meta.data.forEach((bar,i)=>{
+      const v=ds.data[i];if(!v)return;
+      const {x,y,base}=bar;const mid=(y+base)/2;
+      const nm=ds._deal.length>20?ds._deal.slice(0,19)+'…':ds._deal;
+      ctx.fillStyle='#111';
+      ctx.font='500 10px sans-serif';ctx.textBaseline='bottom';ctx.fillText(nm,x,mid-1);
+      ctx.font='500 11px sans-serif';ctx.textBaseline='top';ctx.fillText(fmt(v),x,mid+1);
+    });
+  });
+  ctx.restore();
+}};
+function buildDatasets(){
+  const line=computeSeries();
+  const ds=[{type:'line',label:'Cash net',data:line,borderColor:'#185FA5',backgroundColor:'#185FA5',borderWidth:2.5,tension:0.2,pointRadius:4,pointBackgroundColor:'#185FA5',order:0}];
+  rows.forEach(r=>{
+    if(!r.on)return;
+    const data=PERIODS.map((_,p)=>p===r.period?Math.round(r.amount*100)/100:0);
+    ds.push({type:'bar',label:r.name,data,backgroundColor:segColor(r),stack:'s',order:2,_deal:r.name});
+  });
+  const sf=document.getElementById('statFinal'),sc=document.getElementById('statCreux');
+  sf.textContent=fmt(line[line.length-1]);sc.textContent=fmt(Math.min(...line));
+  sf.style.color=line[line.length-1]<0?'var(--danger)':'var(--text)';
+  sc.style.color=Math.min(...line)<0?'var(--danger)':'var(--text)';
+  return {ds,line};
+}
+function render(){
+  const {ds,line}=buildDatasets();save();
+  const ymin=Math.min(...line,0);
+  if(chart){chart.data.datasets=ds;chart.options.scales.y.suggestedMin=Math.min(-1,ymin-0.5);chart.update();}
+  else{
+    chart=new Chart(document.getElementById('friseCanvas'),{
+      data:{labels:PERIODS,datasets:ds},
+      options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:18}},
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>(c.dataset._deal||c.dataset.label)+': '+fmt(c.parsed.y)}}},
+        scales:{y:{suggestedMin:Math.min(-1,ymin-0.5),suggestedMax:8,grid:{color:(x)=>x.tick.value===0?'rgba(216,90,48,0.5)':'rgba(128,128,128,0.12)'},ticks:{callback:(v)=>v+'M€'}},x:{stacked:true,ticks:{autoSkip:false,maxRotation:45,font:{size:10}}}}},
+      plugins:[barAnnot]
+    });
+  }
+}
+function applySort(){
+  if(!sortKey)return;
+  rows.sort((a,b)=>{
+    if(a.fixed&&!b.fixed)return -1;
+    if(b.fixed&&!a.fixed)return 1;
+    let va=a[sortKey],vb=b[sortKey];
+    if(sortKey==='amount'||sortKey==='period')return (va-vb)*sortDir;
+    return String(va).localeCompare(String(vb),'fr')*sortDir;
+  });
+}
+function updateArrows(){
+  document.querySelectorAll('.sortH').forEach(th=>{
+    const a=th.querySelector('.arr');
+    if(th.dataset.k===sortKey){a.textContent=sortDir===1?'▲':'▼';}else{a.textContent='';}
+  });
+}
+let dragIdx=null;
+function buildRows(){
+  const body=document.getElementById('rowsBody');body.innerHTML='';
+  rows.forEach((r,idx)=>{
+    const tr=document.createElement('tr');
+    tr.dataset.i=idx;
+    tr.style.borderTop='0.5px solid var(--border)';
+    if(r.fixed){
+      tr.draggable=false;
+      tr.style.background='rgba(24,95,165,0.06)';
+      tr.innerHTML=
+        '<td style="text-align:center;padding:6px 2px;color:var(--border-strong)"></td>'+
+        '<td style="text-align:center;padding:6px 3px;color:var(--accent)">•</td>'+
+        '<td style="padding:6px 8px"><div style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:2px;background:'+segColor(r)+';flex-shrink:0"></span><span style="font-weight:600;font-size:13px">'+r.name+'</span></div></td>'+
+        '<td style="padding:6px 5px"><input type="number" step="0.05" value="'+r.amount.toFixed(2)+'" data-i="'+idx+'" class="inAmt" style="width:100%;height:30px;font-size:13px;font-weight:600"/></td>'+
+        '<td style="padding:6px 5px;font-size:11px;color:var(--text2)">'+PERIODS[r.period]+'</td>'+
+        '<td style="padding:6px 5px;font-size:11px;color:var(--text3)">—</td>'+
+        '<td style="padding:6px 5px;font-size:11px;color:var(--text3)">Entrée</td>'+
+        '<td style="text-align:center;padding:6px 3px"></td>';
+      body.appendChild(tr);
+      return;
+    }
+    tr.draggable=true;
+    tr.style.background=r.dir==='in'?'rgba(29,158,117,0.06)':'transparent';
+    tr.innerHTML=
+      '<td style="text-align:center;padding:6px 2px;cursor:grab;color:var(--text3)">⋮⋮</td>'+
+      '<td style="text-align:center;padding:6px 3px"><input type="checkbox" '+(r.on?'checked':'')+' data-i="'+idx+'" class="chkOn" style="width:16px;height:16px;cursor:pointer"/></td>'+
+      '<td style="padding:6px 8px"><div style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:2px;background:'+segColor(r)+';flex-shrink:0"></span><input type="text" value="'+r.name.replace(/"/g,'&quot;')+'" data-i="'+idx+'" class="inName" style="width:100%;height:30px;font-size:13px"/></div></td>'+
+      '<td style="padding:6px 5px"><input type="number" step="0.05" value="'+r.amount.toFixed(2)+'" data-i="'+idx+'" class="inAmt" style="width:100%;height:30px;font-size:13px"/></td>'+
+      '<td style="padding:6px 5px"><select data-i="'+idx+'" class="inPer" style="width:100%;height:30px;font-size:11px">'+PERIODS.map((p,pi)=>'<option value="'+pi+'" '+(pi===r.period?'selected':'')+'>'+p+'</option>').join('')+'</select></td>'+
+      '<td style="padding:6px 5px"><select data-i="'+idx+'" class="inProv" style="width:100%;height:30px;font-size:11px"><option value="CRE" '+(r.prov==='CRE'?'selected':'')+'>CRE</option><option value="FOST" '+(r.prov==='FOST'?'selected':'')+'>FOST</option></select></td>'+
+      '<td style="padding:6px 5px"><select data-i="'+idx+'" class="inDir" style="width:100%;height:30px;font-size:11px"><option value="out" '+(r.dir==='out'?'selected':'')+'>Sortie</option><option value="in" '+(r.dir==='in'?'selected':'')+'>Entrée</option></select></td>'+
+      '<td style="text-align:center;padding:6px 3px"><button data-i="'+idx+'" class="btnDel" style="height:28px;width:28px;padding:0;border:none;color:var(--text3)">🗑</button></td>';
+    body.appendChild(tr);
+  });
+  body.querySelectorAll('.chkOn').forEach(el=>el.onchange=e=>{rows[+e.target.dataset.i].on=e.target.checked;buildRows();render();});
+  body.querySelectorAll('.inName').forEach(el=>el.onchange=e=>{rows[+e.target.dataset.i].name=e.target.value;render();});
+  body.querySelectorAll('.inAmt').forEach(el=>el.onchange=e=>{rows[+e.target.dataset.i].amount=parseFloat(e.target.value)||0;buildRows();render();});
+  body.querySelectorAll('.inPer').forEach(el=>el.onchange=e=>{rows[+e.target.dataset.i].period=+e.target.value;render();});
+  body.querySelectorAll('.inProv').forEach(el=>el.onchange=e=>{rows[+e.target.dataset.i].prov=e.target.value;buildRows();render();});
+  body.querySelectorAll('.inDir').forEach(el=>el.onchange=e=>{rows[+e.target.dataset.i].dir=e.target.value;buildRows();render();});
+  body.querySelectorAll('.btnDel').forEach(el=>el.onclick=e=>{rows.splice(+e.currentTarget.dataset.i,1);buildRows();render();});
+  body.querySelectorAll('tr').forEach(tr=>{
+    if(rows[+tr.dataset.i]&&rows[+tr.dataset.i].fixed)return;
+    tr.addEventListener('dragstart',()=>{dragIdx=+tr.dataset.i;tr.style.opacity='0.4';});
+    tr.addEventListener('dragend',()=>{tr.style.opacity='1';});
+    tr.addEventListener('dragover',e=>{e.preventDefault();tr.style.borderTop='2px solid var(--accent)';});
+    tr.addEventListener('dragleave',()=>{tr.style.borderTop='0.5px solid var(--border)';});
+    tr.addEventListener('drop',e=>{e.preventDefault();let to=+tr.dataset.i;if(dragIdx===null||dragIdx===to)return;if(to===0)to=1;const m=rows.splice(dragIdx,1)[0];rows.splice(to,0,m);dragIdx=null;sortKey=null;buildRows();render();updateArrows();});
+  });
+}
+document.querySelectorAll('.sortH').forEach(th=>{
+  th.onclick=()=>{const k=th.dataset.k;if(sortKey===k){sortDir=-sortDir;}else{sortKey=k;sortDir=1;}applySort();buildRows();render();updateArrows();};
+});
+document.getElementById('addEntree').onclick=()=>{rows.push({name:'Nouvelle entrée',amount:0.5,period:0,dir:'in',prov:'CRE',on:true});sortKey=null;buildRows();render();updateArrows();};
+document.getElementById('addSortie').onclick=()=>{rows.push({name:'Nouveau deal',amount:1.0,period:0,dir:'out',prov:'CRE',on:true});sortKey=null;buildRows();render();updateArrows();};
+buildRows();render();
+}
+});
+</script>
+</body>
+</html>
