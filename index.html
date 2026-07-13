@@ -307,7 +307,7 @@ function renderTable(){
     while(i<sorted.length){
       const grp=sorted[i].pr;
       let j=i,ts=0,tu=0,tp=0;
-      while(j<sorted.length&&sorted[j].pr===grp){ts+=sorted[j].sz||0;tu+=sorted[j].uf||0;tp+=sorted[j].pm||0;j++;}
+      while(j<sorted.length&&sorted[j].pr===grp){if(sel.has(sorted[j].id)){ts+=sorted[j].sz||0;tu+=sorted[j].uf||0;tp+=sorted[j].pm||0;}j++;}
       for(let k=i;k<j;k++)html+=rows[k];
       html+=`<tr class="subtotal-row"><td></td><td></td><td style="font-weight:600;font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.04em">Total ${grp}</td><td></td><td></td><td class="num" style="font-weight:600">${fmtSz(ts)} M€</td><td></td><td class="num" style="font-weight:600">${Math.round(tu)} k€</td><td class="num" style="font-weight:600">${Math.round(tp)} k€</td><td></td><td></td></tr>`;
       i=j;
