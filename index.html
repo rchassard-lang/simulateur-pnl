@@ -172,20 +172,19 @@ tr.subtotal-row td{background:#EFEDE6 !important;border-top:2px solid #D4D0C8;bo
 
 <script>
 let deals=[
-  {id:'j50',n:'Paris — 50 Jacob',sh:'50 Jacob',sp:'CinqTerre',i:'DE',pr:'En exec',ds:'2026-06-30',de:null,p:1.0,sz:0.88,t:17.7,uf:15,pm:0},
-  {id:'fb26',n:'Paris — 26 Francs Bourgeois',sh:'26 Francs Bgs',sp:'CinqTerre',i:'DE',pr:'En exec',ds:'2026-06-30',de:null,p:1.0,sz:0.785,t:19.7,uf:13,pm:0},
-  {id:'am',n:'Aigues-Mortes - Meublé de tourisme',sh:'Aigues-Mortes',sp:'Kintsugi RE',i:'EQ',pr:'En exec',ds:'2026-07-01',de:null,p:0.95,sz:1.199,t:17.0,uf:72,pm:187},
-  {id:'mb',n:'Moncey — Brokerage',sh:'Moncey Brok.',sp:'Barnes AM',i:'BK',pr:'En exec',ds:'2026-09-15',de:null,p:0.95,sz:18.0,t:0,uf:225,pm:0},
-  {id:'lit',n:'Litigation',sh:'Litigation',sp:'Eskariam Advisors / Victory Park',i:'AU',pr:'Urgent',ds:'2026-06-30',de:'2026-09-15',p:0.75,sz:10.0,t:0,uf:400,pm:800},
-  {id:'cy',n:'Sandton — Portefeuille Cayman',sh:'Sandton-Cayman',sp:'Sandton / Cayman Group',i:'EQ',pr:'Urgent',ds:'2026-07-15',de:null,p:0.10,sz:5.0,t:0,uf:250,pm:0},
-  {id:'ms',n:'Marseille - Breuteil',sh:'Breuteil',sp:'Kintsugi RE',i:'EQ',pr:'Urgent',ds:'2026-11-02',de:'2027-01-11',p:0.75,sz:4.73,t:13.6,uf:284,pm:315},
-  {id:'sj',n:'Saint-Jorioz - Annecy',sh:'Saint-Jorioz',sp:'Coco AM',i:'EQ',pr:'Urgent',ds:'2026-12-01',de:'2027-02-15',p:0.75,sz:5.0,t:12.3,uf:300,pm:434},
-  {id:'lr',n:'La Rochelle - Le Rupella',sh:'La Rochelle',sp:'Coco AM',i:'EQ',pr:'Urgent',ds:'2026-08-01',de:'2026-09-30',p:0.80,sz:1.5,t:11.35,uf:90,pm:76},
-  {id:'lg',n:'Les Gets - L\'Ecrin',sh:'Les Gets',sp:'Macber / Chamoue Promotion',i:'EQ',pr:'Urgent',ds:'2026-09-01',de:null,p:0.50,sz:1.6,t:15.0,uf:96,pm:407},
-  {id:'nt',n:'Nanterre - Padel',sh:'Nanterre',sp:'Cyril Laborde',i:'EQ',pr:'Urgent',ds:null,de:null,p:0.50,sz:2.922,t:15.0,uf:175,pm:1038},
-  {id:'sj2',n:'Saint-James - Parkings Bd Raspail',sh:'Saint-James',sp:'Financière Saint-James',i:'BR',pr:'Urgent',ds:'2026-09-15',de:null,p:0.25,sz:13.0,t:0,uf:0,pm:0},
-  {id:'fm',n:'Paris 04 - 15 François Miron',sh:'François Miron',sp:'Côme / Direct',i:'EQ',pr:'Urgent',ds:null,de:null,p:0,sz:10.0,t:0,uf:0,pm:0},
-  {id:'pu',n:'Datacenter - Puteaux — Le Capitole ⚠',sh:'DC Puteaux ⚠',sp:'Mameri / Firce',i:'BR',pr:'Urgent',ds:null,de:null,p:0.10,sz:180.0,t:0,uf:0,pm:0}
+  {id:'chamonix0',n:'Chamonix - L’Olympique',sh:'Chamonix - L’O',sp:'',i:'EQ',pr:'Urgent',ds:null,de:null,p:0,sz:0,t:0,uf:0,pm:0},
+  {id:'mozaicst1',n:'Mozaic_Strasbourg (Wacken)',sh:'Mozaic_Strasbo',sp:'Artea',i:'BR',pr:'Urgent',ds:'2026-08-03',de:null,p:0.75,sz:2.5,t:12,uf:40,pm:0},
+  {id:'larochel2',n:'La Rochelle - Clinique du Mail',sh:'La Rochelle - ',sp:'Novaxia',i:'BR',pr:'Urgent',ds:'2026-09-30',de:null,p:0.05,sz:15,t:0,uf:300,pm:0},
+  {id:'neuillys3',n:'Neuilly-sur-Seine - 20 Château',sh:'Neuilly-sur-Se',sp:'',i:'EQ',pr:'Urgent',ds:null,de:null,p:0.05,sz:19.806,t:12.9,uf:1180,pm:1326},
+  {id:'saintbar4',n:'Saint-Barthélemy - OIMA Villas',sh:'Saint-Barthéle',sp:'Silvergrey Invest',i:'BR',pr:'Urgent',ds:'2026-08-03',de:null,p:0.75,sz:1.5,t:10,uf:23,pm:0},
+  {id:'nanterre5',n:'Nanterre - Padel',sh:'Nanterre - Pad',sp:'Cyril Laborde',i:'EQ',pr:'Urgent',ds:'2027-03-08',de:null,p:0.15,sz:3.046,t:9,uf:305,pm:1601},
+  {id:'larochel6',n:'La Rochelle - Le Rupella',sh:'La Rochelle - ',sp:'Coco AM',i:'EQ',pr:'Urgent',ds:'2027-01-31',de:null,p:0.75,sz:1.5,t:11.4,uf:90,pm:76},
+  {id:'marseill7',n:'Marseille - Breteuil',sh:'Marseille - Br',sp:'Kintsugi Real Estate',i:'EQ',pr:'Urgent',ds:'2026-11-02',de:'2027-01-11',p:0.75,sz:4.73,t:13.6,uf:284,pm:315},
+  {id:'litigati8',n:'Litigation',sh:'Litigation',sp:'Eskariam Advisors',i:'AU',pr:'En exec',ds:'2026-06-30',de:'2026-09-15',p:1,sz:10,t:0,uf:400,pm:800},
+  {id:'paris0329',n:'Paris 03 - 26 Francs Bourgeois',sh:'Paris 03 - 26 ',sp:'CinqTerre',i:'DE',pr:'En exec',ds:'2026-06-30',de:null,p:1,sz:0.785,t:19.7,uf:13,pm:0},
+  {id:'aiguesmo10',n:'Aigues-Mortes - Meublé de tourisme',sh:'Aigues-Mortes ',sp:'Kintsugi Real Estate',i:'EQ',pr:'En exec',ds:'2026-07-01',de:null,p:0.95,sz:3.008,t:20.8,uf:180,pm:371},
+  {id:'saintjor11',n:'Saint-Jorioz - Annecy',sh:'Saint-Jorioz -',sp:'Coco AM',i:'EQ',pr:'Urgent',ds:'2026-12-01',de:'2027-02-15',p:0.75,sz:5,t:12.3,uf:300,pm:434},
+  {id:'paris06512',n:'Paris 06 - 50 Jacob',sh:'Paris 06 - 50 ',sp:'CinqTerre',i:'DE',pr:'En exec',ds:'2026-07-24',de:null,p:1,sz:0.88,t:17.7,uf:15,pm:0}
 ];
 const iC={EQ:'#378ADD',BR:'#BA7517',DE:'#7F77DD',AU:'#D85A30',BK:'#2D9B7D'};
 const iL={EQ:'Equity',BR:'Bridge SR',DE:'Demeures',AU:'Autre',BK:'Broker'};
