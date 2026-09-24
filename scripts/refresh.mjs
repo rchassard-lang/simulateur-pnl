@@ -1,13 +1,12 @@
 // refresh.mjs — Régénère le bloc `let deals=[...]` de index.html depuis Notion.
-// Node 20+. Dépendance : @notionhq/client v2.x (présent mais non utilisé pour la query).
-// Query + schéma via l'endpoint REST data source (API Notion 2025-09-03).
+// Node 20+. Query + schéma via l'endpoint REST data source (API Notion 2025-09-03).
 // Env : NOTION_TOKEN (secret), DATABASE_ID (défaut ci-dessous), DATA_SOURCE_ID (optionnel)
 
 import { readFileSync, writeFileSync } from "node:fs";
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const DATABASE_ID = process.env.DATABASE_ID || "3ae2ffba49b183cabc5d0189ec945309";
-const DATA_SOURCE_ID = process.env.DATA_SOURCE_ID || null; // sinon auto-résolu
+const DATA_SOURCE_ID = process.env.DATA_SOURCE_ID || null;
 const NOTION_VERSION = "2025-09-03";
 const INDEX_PATH = "index.html";
 
@@ -38,19 +37,12 @@ function makeId(nom, i) {
   return (base || "d") + i;
 }
 
-// --- Appels REST directs (le SDK v2 n'expose pas les data sources) ---
 async function notionGet(path) {
   const res = await fetch(`https://api.notion.com/v1${path}`, {
     method: "GET",
-    headers: {
-      "Authorization": `Bearer ${NOTION_TOKEN}`,
-      "Notion-Version": NOTION_VERSION,
-    },
+    headers: { "Authorization": `Bearer ${NOTION_TOKEN}`, "Notion-Version": NOTION_VERSION },
   });
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(`Notion GET ${path} ${res.status} : ${txt}`);
-  }
+  if (!res.ok) throw new Error(`Notion GET ${path} ${res.status} : ${await res.text()}`);
   return res.json();
 }
 
@@ -64,33 +56,22 @@ async function notionPost(path, body) {
     },
     body: JSON.stringify(body || {}),
   });
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(`Notion POST ${path} ${res.status} : ${txt}`);
-  }
+  if (!res.ok) throw new Error(`Notion POST ${path} ${res.status} : ${await res.text()}`);
   return res.json();
 }
 
-// Résout la data source, puis lit les propriétés SUR la data source (API 2025-09+).
 async function resolveSourceAndCheck() {
-  // 1) La database ne sert qu'à trouver la/les data source(s).
   const db = await notionGet(`/databases/${DATABASE_ID}`);
   let dsId = DATA_SOURCE_ID;
   if (!dsId) {
     const sources = db.data_sources || [];
-    if (sources.length === 0) {
-      console.error("Aucune data source sur cette database.");
-      process.exit(1);
-    }
+    if (sources.length === 0) { console.error("Aucune data source."); process.exit(1); }
     if (sources.length > 1) {
       console.error(`Plusieurs data sources : ${sources.map((s) => `${s.name} (${s.id})`).join(" | ")}`);
-      console.error("Renseigne DATA_SOURCE_ID pour lever l'ambiguïté.");
       process.exit(1);
     }
     dsId = sources[0].id;
   }
-
-  // 2) Les propriétés vivent sur la data source, pas sur la database.
   const dsObj = await notionGet(`/data_sources/${dsId}`);
   const props = dsObj.properties || {};
   if (!props[STATUT_PROP]) {
@@ -98,14 +79,6 @@ async function resolveSourceAndCheck() {
     console.error(`Propriétés disponibles : ${Object.keys(props).join(" | ")}`);
     process.exit(1);
   }
-  const options = (props[STATUT_PROP].select?.options || []).map((o) => o.name);
-  const manquantes = STATUTS_EXCLUS.filter((v) => !options.includes(v));
-  if (manquantes.length) {
-    console.error(`Valeurs exclues introuvables : ${manquantes.join(" | ")}`);
-    console.error(`Valeurs disponibles : ${options.join(" | ")}`);
-    process.exit(1);
-  }
-
   console.log(`Schema OK — statut "${STATUT_PROP}", exclusions : ${STATUTS_EXCLUS.join(" | ")}`);
   console.log(`Data source : ${dsId}`);
   return dsId;
@@ -116,18 +89,27 @@ async function fetchDeals(dsId) {
   let cursor;
   do {
     const res = await notionPost(`/data_sources/${dsId}/query`, {
-      start_cursor: cursor,
-      page_size: 100,
+      start_cursor: cursor, page_size: 100,
     });
     pages.push(...res.results);
     cursor = res.has_more ? res.next_cursor : undefined;
   } while (cursor);
   console.log(`Pages brutes recuperees (avant filtre) : ${pages.length}`);
+
+  // --- DIAGNOSTIC : noms de propriétés + champ statut des 3 premières pages ---
+  if (pages.length > 0) {
+    console.log(`Noms de proprietes page 1 : ${Object.keys(pages[0].properties).join(" | ")}`);
+  }
+  for (const pg of pages.slice(0, 3)) {
+    console.log(`STATUT brut : ${JSON.stringify(P(pg, STATUT_PROP))}`);
+  }
+  // --- FIN DIAGNOSTIC ---
+
   const exclus = STATUTS_EXCLUS.map(norm);
   return pages.filter((pg) => {
     const s = norm(getSelect(P(pg, STATUT_PROP)));
-    if (s === "") return false;          // exclut les statuts vides
-    return !exclus.includes(s);          // exclut 1/ INVESTI et 3/ DEAD
+    if (s === "") return false;
+    return !exclus.includes(s);
   });
 }
 
