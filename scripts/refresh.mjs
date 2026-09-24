@@ -9,7 +9,15 @@ import { readFileSync, writeFileSync } from "node:fs";
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const DATABASE_ID = process.env.DATABASE_ID || "3ae2ffba49b183cabc5d0189ec945309";
 const INDEX_PATH = "index.html";
-const PRIORITES = ["En exec", "Urgent"];
+
+// Propriété de statut dans Notion (nom exact, emojis inclus).
+const STATUT_PROP = "STATUT ‼️";
+// Valeurs = deals "vivants" à inclure dans le simulateur.
+const STATUTS = [
+  "2/ EN COURS x En levée",
+  "2/ EN COURS x Sécurisés",
+  "2/ EN COURS x DD en cours",
+];
 
 const INSTRUMENT_MAP = {
   "EQUITY": "EQ", "BRIDGE SENIOR": "BR", "BRIDGE MEZZ": "BR",
@@ -35,6 +43,26 @@ function makeId(nom, i) {
   return (base || "d") + i;
 }
 
+// Vérifie que la propriété de statut et ses valeurs existent avant de requêter.
+// Log clair en cas de renommage, au lieu d'un stack trace Notion.
+async function checkSchema() {
+  const db = await notion.databases.retrieve({ database_id: DATABASE_ID });
+  const props = db.properties || {};
+  if (!props[STATUT_PROP]) {
+    console.error(`Propriété "${STATUT_PROP}" introuvable dans la DB.`);
+    console.error(`Propriétés disponibles : ${Object.keys(props).join(" | ")}`);
+    process.exit(1);
+  }
+  const options = (props[STATUT_PROP].select?.options || []).map((o) => o.name);
+  const manquantes = STATUTS.filter((v) => !options.includes(v));
+  if (manquantes.length) {
+    console.error(`Valeurs de statut introuvables : ${manquantes.join(" | ")}`);
+    console.error(`Valeurs disponibles : ${options.join(" | ")}`);
+    process.exit(1);
+  }
+  console.log(`Schema OK — statut "${STATUT_PROP}", ${STATUTS.length} valeur(s) filtrée(s).`);
+}
+
 async function fetchDeals() {
   const pages = [];
   let cursor;
@@ -43,7 +71,7 @@ async function fetchDeals() {
       database_id: DATABASE_ID,
       start_cursor: cursor,
       page_size: 100,
-      filter: { or: PRIORITES.map((v) => ({ property: "Priorité", select: { equals: v } })) },
+      filter: { or: STATUTS.map((v) => ({ property: STATUT_PROP, select: { equals: v } })) },
     });
     pages.push(...res.results);
     cursor = res.has_more ? res.next_cursor : undefined;
@@ -54,7 +82,7 @@ async function fetchDeals() {
 function pageToDeal(pg, i) {
   const nom = getTitle(P(pg, "Nom du projet"));
   const instrRaw = getSelect(P(pg, "Instrument"));
-  const prio = getSelect(P(pg, "Priorité"));
+  const statut = getSelect(P(pg, STATUT_PROP));
   const sponsor = clean(getSelect(P(pg, "Sponsor / GP")));
   const montant = getNumber(P(pg, "Montant à lever"));
   const proba = getNumber(P(pg, "Probabilité"));
@@ -66,7 +94,7 @@ function pageToDeal(pg, i) {
   const sz = montant != null ? Math.round((montant / 1000) * 1000) / 1000 : 0;
   return {
     id: makeId(nom, i), n: nom, sh: nom.slice(0, 14), sp: sponsor,
-    i: INSTRUMENT_MAP[instrRaw] || "AU", pr: prio, ds, de,
+    i: INSTRUMENT_MAP[instrRaw] || "AU", pr: statut, ds, de,
     p: proba != null ? proba : 0, sz,
     t: tri != null ? Math.round(tri * 1000) / 10 : 0,
     uf: upfront != null ? Math.round(upfront) : 0,
@@ -90,6 +118,7 @@ function replaceBlock(html, block) {
 }
 
 async function main() {
+  await checkSchema();
   const pages = await fetchDeals();
   const deals = pages.map(pageToDeal).filter((d) => d.n);
   console.log(`Deals recuperes : ${deals.length}`);
