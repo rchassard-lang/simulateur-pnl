@@ -1,18 +1,18 @@
 // refresh.mjs — Régénère le bloc `let deals=[...]` de index.html depuis Notion.
-// Node 20+. Dépendance : @notionhq/client
-// Env : NOTION_TOKEN (secret), DATABASE_ID (défaut ci-dessous)
-// Règles d'unité validées : sz = Montant à lever / 1000 ; uf,pm en k€ ; t = TRI*100 ; p = 0..1
+// Node 20+. Dépendance : @notionhq/client v2.x (utilisé pour retrieve).
+// La query passe par l'endpoint REST data source (API Notion 2025-09+).
+// Env : NOTION_TOKEN (secret), DATABASE_ID (défaut ci-dessous), DATA_SOURCE_ID (optionnel)
 
 import { Client } from "@notionhq/client";
 import { readFileSync, writeFileSync } from "node:fs";
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const DATABASE_ID = process.env.DATABASE_ID || "3ae2ffba49b183cabc5d0189ec945309";
+const DATA_SOURCE_ID = process.env.DATA_SOURCE_ID || null; // sinon auto-résolu
+const NOTION_VERSION = "2025-09-03";
 const INDEX_PATH = "index.html";
 
-// Propriété de statut dans Notion (nom exact, emojis inclus).
 const STATUT_PROP = "STATUT ‼️";
-// Logique liste noire : on inclut TOUT sauf ces statuts (et sauf les statuts vides).
 const STATUTS_EXCLUS = ["1/ INVESTI", "3/ DEAD"];
 
 const INSTRUMENT_MAP = {
@@ -40,10 +40,44 @@ function makeId(nom, i) {
   return (base || "d") + i;
 }
 
-// Vérifie que la propriété de statut existe et que les valeurs exclues sont bien
-// des options réelles (sinon l'exclusion serait silencieusement sans effet).
-async function checkSchema() {
-  const db = await notion.databases.retrieve({ database_id: DATABASE_ID });
+// Appel REST direct à l'API Notion (le SDK v2 n'expose pas les data sources).
+async function notionFetch(path, body) {
+  const res = await fetch(`https://api.notion.com/v1${path}`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${NOTION_TOKEN}`,
+      "Notion-Version": NOTION_VERSION,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body || {}),
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Notion ${path} ${res.status} : ${txt}`);
+  }
+  return res.json();
+}
+
+async function notionGet(path) {
+  const res = await fetch(`https://api.notion.com/v1${path}`, {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${NOTION_TOKEN}`,
+      "Notion-Version": NOTION_VERSION,
+    },
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Notion GET ${path} ${res.status} : ${txt}`);
+  }
+  return res.json();
+}
+
+// Résout l'ID de data source et valide la propriété de statut + les exclusions.
+async function resolveSourceAndCheck() {
+  const db = await notionGet(`/databases/${DATABASE_ID}`);
+
+  // Vérif propriété de statut sur le schéma de la database.
   const props = db.properties || {};
   if (!props[STATUT_PROP]) {
     console.error(`Propriété "${STATUT_PROP}" introuvable dans la DB.`);
@@ -53,31 +87,48 @@ async function checkSchema() {
   const options = (props[STATUT_PROP].select?.options || []).map((o) => o.name);
   const manquantes = STATUTS_EXCLUS.filter((v) => !options.includes(v));
   if (manquantes.length) {
-    console.error(`Valeurs exclues introuvables (exclusion sans effet) : ${manquantes.join(" | ")}`);
+    console.error(`Valeurs exclues introuvables : ${manquantes.join(" | ")}`);
     console.error(`Valeurs disponibles : ${options.join(" | ")}`);
     process.exit(1);
   }
+
+  // Résolution de la data source.
+  let dsId = DATA_SOURCE_ID;
+  if (!dsId) {
+    const sources = db.data_sources || [];
+    if (sources.length === 0) {
+      console.error("Aucune data source sur cette database (API trop ancienne ?).");
+      process.exit(1);
+    }
+    if (sources.length > 1) {
+      console.error(`Plusieurs data sources : ${sources.map((s) => `${s.name} (${s.id})`).join(" | ")}`);
+      console.error("Renseigne DATA_SOURCE_ID pour lever l'ambiguïté.");
+      process.exit(1);
+    }
+    dsId = sources[0].id;
+  }
   console.log(`Schema OK — statut "${STATUT_PROP}", exclusions : ${STATUTS_EXCLUS.join(" | ")}`);
+  console.log(`Data source : ${dsId}`);
+  return dsId;
 }
 
-async function fetchDeals() {
+async function fetchDeals(dsId) {
   const pages = [];
   let cursor;
   do {
-    const res = await notion.databases.query({
-      database_id: DATABASE_ID,
+    const res = await notionFetch(`/data_sources/${dsId}/query`, {
       start_cursor: cursor,
       page_size: 100,
-      // Pas de filtre serveur : filtrage en JS (robuste aux variantes de libellé/caractères).
     });
     pages.push(...res.results);
     cursor = res.has_more ? res.next_cursor : undefined;
   } while (cursor);
+  console.log(`Pages brutes recuperees (avant filtre) : ${pages.length}`);
   const exclus = STATUTS_EXCLUS.map(norm);
   return pages.filter((pg) => {
     const s = norm(getSelect(P(pg, STATUT_PROP)));
-    if (s === "") return false;          // exclut les statuts vides
-    return !exclus.includes(s);          // exclut 1/ INVESTI et 3/ DEAD
+    if (s === "") return false;
+    return !exclus.includes(s);
   });
 }
 
@@ -120,8 +171,8 @@ function replaceBlock(html, block) {
 }
 
 async function main() {
-  await checkSchema();
-  const pages = await fetchDeals();
+  const dsId = await resolveSourceAndCheck();
+  const pages = await fetchDeals(dsId);
   const deals = pages.map(pageToDeal).filter((d) => d.n);
   console.log(`Deals recuperes : ${deals.length}`);
   const html = readFileSync(INDEX_PATH, "utf8");
