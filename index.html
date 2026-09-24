@@ -208,9 +208,9 @@ const CAT_RANK={'En levée':0,'Sécurisés':1,'DD en cours':2};
 const CATS_SECURISE=['En levée','Sécurisés'];
 function catOf(pr){
   if(!pr)return'';
-  const m=String(pr).split(/\\sx\\s/);           // "2/ EN COURS x En levée" -> "En levée"
-  const tail=(m.length>1?m[m.length-1]:pr).trim();
-  // normalise vers une des 3 catégories connues
+  const s=String(pr);
+  const idx=s.lastIndexOf(' x ');
+  const tail=(idx>=0?s.slice(idx+3):s).trim();
   const hit=CAT_ORDER.find(c=>c.toLowerCase()===tail.toLowerCase());
   return hit||tail;
 }
