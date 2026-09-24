@@ -20,18 +20,14 @@ h1{font-size:19px;font-weight:500;margin-bottom:3px}
 .kpi-l{font-size:9px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.06em}
 .kpi-v{font-size:19px;font-weight:500;margin-top:2px;line-height:1.1}
 .kpi-s{font-size:10px;color:#AAA;margin-top:2px}
-.kpi-mid{font-size:13px;font-weight:400;color:#888;margin-top:3px}
-.kpi-mid-label{font-size:8px;font-weight:600;color:#CCC;text-transform:uppercase;letter-spacing:.05em;margin-top:5px}
 .sec{font-size:9px;font-weight:600;color:#999;margin:.9rem 0 .4rem;text-transform:uppercase;letter-spacing:.07em;display:flex;align-items:center;gap:8px}
 .sec::after{content:'';flex:1;height:1px;background:#E5E1D8}
-/* TABLE */
 .tbl-wrap{background:#FFF;border:1px solid #E5E1D8;border-radius:8px;overflow-x:auto;margin-bottom:.25rem}
 table{width:100%;border-collapse:collapse;font-size:11.5px}
 thead{background:#F9F8F5}
 th{padding:6px 4px;text-align:left;font-size:9px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;border-bottom:1px solid #E5E1D8}
 td{padding:5px 4px;border-bottom:1px solid #F0EDE6;vertical-align:middle;white-space:nowrap}
 tr:last-child td{border-bottom:none}
-/* ROW BG PAR CATÉGORIE */
 tr.cat-levee td{background:#F2FBF6}
 tr.cat-secu td{background:#F4F9FD}
 tr.cat-dd td{background:#FDFCF8}
@@ -42,22 +38,14 @@ tr.cat-dd:hover td{background:#F7F4EE;cursor:pointer}
 tr.low-proba td{color:#888 !important;background:#FAFAFA !important;font-style:italic}
 tr.low-proba:hover td{background:#F5F5F5 !important;cursor:pointer}
 tr.low-proba.off td{opacity:.25}
-/* NOM COULEUR */
 .name-levee{color:#1F7A4D;font-weight:500;font-size:12px}
 .name-secu{color:#185FA5;font-weight:500;font-size:12px}
 .name-dd{color:#9A7020;font-weight:500;font-size:12px}
 .sp-inline{font-size:10.5px;color:#AAA;font-weight:400}
 .num{font-variant-numeric:tabular-nums;white-space:nowrap}
-.pill{display:inline-block;padding:1px 5px;font-size:9px;font-weight:600;border-radius:3px}
-.eq{background:#EAF3FB;color:#1862A0}
-.br{background:#FDF0D8;color:#7A4710}
-.de{background:#EEECFD;color:#3E368E}
-.au{background:#FDEAE4;color:#8A3318}
-.bk{background:#F0EEEB;color:#666}
 .pr-levee{background:#E6F5EE;color:#1B6837;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
 .pr-secu{background:#E3F0FB;color:#155189;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
 .pr-dd{background:#FDF2E4;color:#8A4A0E;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:600}
-/* Champs éditables discrets */
 .ed{border:1px solid transparent;border-radius:4px;background:transparent;padding:2px 4px;font-family:inherit;transition:border .1s,background .1s;color:inherit;font-size:inherit}
 .ed:hover{border-color:#E0DDD5}
 .ed:focus{outline:none;border-color:#1A1A1A;background:#FFF}
@@ -68,20 +56,8 @@ th.sorth{cursor:pointer;user-select:none}
 th.sorth:hover{color:#1A1A1A}
 th.sorth .ar{color:#1A1A1A;font-size:9px;margin-left:2px}
 tr.subtotal-row td{background:#EFEDE6 !important;border-top:2px solid #D4D0C8;border-bottom:2px solid #D4D0C8;padding:6px 4px}
-/* Gate mot de passe */
-.gate{position:fixed;inset:0;background:#F5F4F0;display:flex;align-items:center;justify-content:center;z-index:100}
-.gate.hidden{display:none}
-.gate .box{background:#FFF;border:1px solid #E5E1D8;border-radius:12px;padding:2rem;max-width:340px;width:90%;text-align:center}
-.gate h2{font-size:18px;font-weight:500;margin:0 0 .5rem}
-.gate p{font-size:13px;color:#888;margin:0 0 1.25rem}
-.gate input{height:40px;width:100%;font-size:15px;margin-bottom:.75rem;padding:0 12px;border:1px solid #D4D0C8;border-radius:6px}
-.gate button{height:40px;width:100%;background:#1A1A1A;color:#FFF;border:none;font-size:15px;font-weight:500;border-radius:6px;cursor:pointer}
-.gate .err{color:#B4442A;font-size:12px;min-height:16px;margin-top:4px}
 .chk{width:14px;height:14px;cursor:pointer}
-/* TIMELINE */
 .tlbox{background:#FFF;border:1px solid #E5E1D8;border-radius:8px;overflow-x:auto;padding:8px}
-/* CHART */
-.chart-wrap{position:relative;width:100%;min-height:280px;background:#FFF;border:1px solid #E5E1D8;border-radius:8px;padding:12px}
 .legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:.5rem}
 .li{display:flex;align-items:center;gap:5px;font-size:11px;color:#888}
 .ls{width:10px;height:10px;border-radius:2px;flex-shrink:0}
@@ -93,15 +69,6 @@ tr.subtotal-row td{background:#EFEDE6 !important;border-top:2px solid #D4D0C8;bo
 </head>
 <body>
 
-<div class="gate" id="gate">
-  <div class="box">
-    <h2>Accès restreint</h2>
-    <p>Suivi P&L CRE. Entre le mot de passe pour consulter.</p>
-    <input type="password" id="pw" placeholder="Mot de passe" autocomplete="off"/>
-    <button id="pwBtn">Accéder</button>
-    <div class="err" id="pwErr"></div>
-  </div>
-</div>
 <nav class="crenav">
   <a href="./" class="active">Suivi P&L</a>
   <a href="./liquidite/">Déploiement / Liquidité</a>
@@ -119,9 +86,9 @@ tr.subtotal-row td{background:#EFEDE6 !important;border-top:2px solid #D4D0C8;bo
   <button data-a="high">Proba ≥75%</button>
   <button data-a="conservative">Proba ≥50%</button>
   <button data-a="none">Aucun</button>
-  <button id="addDealBtn" style="margin-left:auto;background:#1A1A1A;border:1px solid #1A1A1A;color:#FFF">+ Deal</button>
-  <button id="refreshNotionBtn" style="background:#185FA5;border:1px solid #185FA5;color:#FFF" title="Relit les données depuis Notion et met à jour la page (~1 min)">⟳ Refresh Notion</button>
-  <button id="resetPnlBtn" style="background:#FFF;border:1px solid #D4D0C8;color:#B4442A" title="Restaure les valeurs d'origine et efface vos modifications locales">↺ Réinitialiser</button>
+  <button id="addDealBtn" type="button" style="margin-left:auto;background:#1A1A1A;border:1px solid #1A1A1A;color:#FFF">+ Deal</button>
+  <button id="refreshNotionBtn" type="button" style="background:#185FA5;border:1px solid #185FA5;color:#FFF" title="Relit les données depuis Notion et met à jour la page (~1 min)">⟳ Refresh Notion</button>
+  <button id="resetPnlBtn" type="button" style="background:#FFF;border:1px solid #D4D0C8;color:#B4442A" title="Restaure les valeurs d'origine et efface vos modifications locales">↺ Réinitialiser</button>
 </div>
 
 <div class="kpis" id="kpis"></div>
@@ -166,8 +133,6 @@ tr.subtotal-row td{background:#EFEDE6 !important;border-top:2px solid #D4D0C8;bo
 </div>
 <div id="pnl-svg-wrap" style="background:#FFF;border:1px solid #E5E1D8;border-radius:8px;padding:12px 12px 6px"></div>
 
-
-
 <div class="sec" style="margin-top:1.1rem">Marge par deal — P&L brut / Notionnel (%)</div>
 <div id="margin-wrap" style="background:#FFF;border:1px solid #E5E1D8;border-radius:8px;padding:12px 12px 6px"></div>
 
@@ -175,54 +140,53 @@ tr.subtotal-row td{background:#EFEDE6 !important;border-top:2px solid #D4D0C8;bo
 
 <script>
 let deals=[
-  {id:'portopro0',n:'Porto - Promotion',sh:'Porto - Promot',sp:'Avenue',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2026-10-30',de:null,p:0.25,sz:6,t:18,uf:0,pm:0},
-  {id:'hotelcan1',n:'Hotel Cannes',sh:'Hotel Cannes',sp:'CinqTerre',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-03-29',de:null,p:0.5,sz:8,t:0,uf:0,pm:0},
-  {id:'dealdeha2',n:'Deal de Hassan',sh:'Deal de Hassan',sp:'',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.1,sz:0,t:0,uf:0,pm:0},
-  {id:'paris1623',n:'Paris 16 - 20 Foch',sh:'Paris 16 - 20 ',sp:'Cyril de Lalagade',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.05,sz:2,t:0,uf:0,pm:0},
-  {id:'paris0814',n:'Paris 08 - 1 Wilson',sh:'Paris 08 - 1 W',sp:'Altifund',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-10-01',de:null,p:0.8,sz:2.5,t:10.7,uf:100,pm:0},
-  {id:'paris1725',n:'Paris 17 - 22 Bayen',sh:'Paris 17 - 22 ',sp:'Mimco',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-11-02',de:null,p:0.5,sz:3,t:12,uf:100,pm:0},
-  {id:'figueira6',n:'Figueira da Foz - Maisons modulaires',sh:'Figueira da Fo',sp:'Manu Barbosa',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.5,sz:4,t:0,uf:0,pm:0},
-  {id:'paris0847',n:'Paris 08 - 40 Marceau',sh:'Paris 08 - 40 ',sp:'Barnes AM',i:'EQ',pr:'2/ EN COURS x En levée',ds:'2026-10-02',de:null,p:0.8,sz:1,t:14.8,uf:60,pm:182},
-  {id:'benouvil8',n:'Bénouville - Manoir Hastings',sh:'Bénouville - M',sp:'NESO',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2026-12-15',de:null,p:0.75,sz:3,t:0,uf:0,pm:0},
-  {id:'meylande9',n:'Meylan - Decibeldonne',sh:'Meylan - Decib',sp:'Artea',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-11-30',de:null,p:0.75,sz:5.3,t:11,uf:0,pm:0},
-  {id:'chamonix10',n:'Chamonix - ALPY',sh:'Chamonix - ALP',sp:'Artemise AM',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-03-15',de:null,p:0.75,sz:7,t:0,uf:0,pm:0},
-  {id:'strasbou11',n:'Strasbourg - Wacken',sh:'Strasbourg - W',sp:'Artea',i:'BR',pr:'2/ EN COURS x En levée',ds:'2026-10-09',de:null,p:1,sz:3,t:12,uf:60,pm:0},
-  {id:'larochel12',n:'La Rochelle - Le Rupella',sh:'La Rochelle - ',sp:'Coco AM',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-01-31',de:null,p:0.25,sz:1.5,t:11.4,uf:90,pm:76},
-  {id:'marseill13',n:'Marseille - 22 Breteuil',sh:'Marseille - 22',sp:'Kintsugi Real Estate',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2026-12-15',de:null,p:0.8,sz:4.73,t:13.6,uf:284,pm:315},
-  {id:'litigati14',n:'Litigation',sh:'Litigation',sp:'Eskariam Advisors',i:'AU',pr:'2/ EN COURS x En levée',ds:'2026-12-14',de:null,p:1,sz:1.3,t:10,uf:130,pm:0},
-  {id:'paris03215',n:'Paris 03 - 26 Francs Bourgeois',sh:'Paris 03 - 26 ',sp:'CinqTerre',i:'DE',pr:'2/ EN COURS x En levée',ds:'2026-10-31',de:null,p:1,sz:0.675,t:23,uf:13,pm:0},
-  {id:'saintjor16',n:'Saint-Jorioz - Annecy',sh:'Saint-Jorioz -',sp:'Coco AM',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2027-04-01',de:'2027-07-20',p:0.8,sz:5,t:12.3,uf:300,pm:434}
+  {id:'portopro0',n:'Porto - Promotion',sh:'Porto - Promot',sp:'Avenue',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0,sz:18,t:22,uf:0,pm:0},
+  {id:'hotelcan1',n:'Hotel Cannes',sh:'Hotel Cannes',sp:'CinqTerre',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.5,sz:8,t:0,uf:0,pm:0},
+  {id:'ruebayen2',n:'Rue Bayen - Deal de Mimco',sh:'Rue Bayen - De',sp:'Mimco',i:'BR',pr:'2/ EN COURS x Sécurisés',ds:'2026-10-19',de:null,p:0.8,sz:3,t:11,uf:70,pm:0},
+  {id:'dealdeha3',n:'Deal de Hassan',sh:'Deal de Hassan',sp:'',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0,sz:0,t:0,uf:0,pm:0},
+  {id:'paris1624',n:'Paris 16 - 20 Foch',sh:'Paris 16 - 20 ',sp:'Cyril de Lalagade',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0,sz:2,t:0,uf:0,pm:0},
+  {id:'paris0815',n:'Paris 08 - 1 Wilson',sh:'Paris 08 - 1 W',sp:'Altifund',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-10-01',de:null,p:0.8,sz:2.5,t:10.7,uf:100,pm:0},
+  {id:'paris1726',n:'Paris 17 - 22 Bayen',sh:'Paris 17 - 22 ',sp:'Mimco',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-10-15',de:null,p:0.5,sz:3,t:12,uf:100,pm:0},
+  {id:'figueira7',n:'Figueira da Foz - Maisons modulaires',sh:'Figueira da Fo',sp:'Manu Barbosa',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.5,sz:4,t:0,uf:0,pm:0},
+  {id:'paris0848',n:'Paris 08 - 40 Marceau',sh:'Paris 08 - 40 ',sp:'Barnes AM',i:'EQ',pr:'2/ EN COURS x En levée',ds:'2026-10-02',de:null,p:0.8,sz:1,t:14.8,uf:60,pm:182},
+  {id:'benouvil9',n:'Bénouville - Manoir Hastings',sh:'Bénouville - M',sp:'NESO',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2026-12-24',de:null,p:0.5,sz:3,t:0,uf:0,pm:0},
+  {id:'meylande10',n:'Meylan - Decibeldonne',sh:'Meylan - Decib',sp:'Artea',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.75,sz:5.3,t:11,uf:0,pm:0},
+  {id:'chamonix11',n:'Chamonix - ALPY',sh:'Chamonix - ALP',sp:'Artemise AM',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-03-15',de:null,p:0.75,sz:7,t:0,uf:0,pm:0},
+  {id:'strasbou12',n:'Strasbourg - Wacken',sh:'Strasbourg - W',sp:'Artea',i:'BR',pr:'2/ EN COURS x En levée',ds:'2026-09-30',de:null,p:1,sz:3,t:12,uf:60,pm:0},
+  {id:'isneauvi13',n:'Isneauville - Vente à réméré',sh:'Isneauville - ',sp:'Demathieu Bard Immobilier',i:'AU',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.05,sz:3.9,t:17,uf:0,pm:0},
+  {id:'larochel14',n:'La Rochelle - Le Rupella',sh:'La Rochelle - ',sp:'Coco AM',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-01-31',de:null,p:0.25,sz:1.5,t:11.4,uf:90,pm:76},
+  {id:'marseill15',n:'Marseille - 22 Breteuil',sh:'Marseille - 22',sp:'Kintsugi Real Estate',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2026-12-15',de:null,p:0.8,sz:4.73,t:13.6,uf:284,pm:315},
+  {id:'sujetpat16',n:'Sujet patrimonial',sh:'Sujet patrimon',sp:'',i:'DE',pr:'2/ EN COURS x DD en cours',ds:'2026-03-23',de:null,p:0.05,sz:0.5,t:10,uf:0,pm:0},
+  {id:'litigati17',n:'Litigation',sh:'Litigation',sp:'Eskariam Advisors',i:'AU',pr:'2/ EN COURS x En levée',ds:'2026-10-05',de:null,p:1,sz:2,t:10,uf:150,pm:0},
+  {id:'paris03218',n:'Paris 03 - 26 Francs Bourgeois',sh:'Paris 03 - 26 ',sp:'CinqTerre',i:'DE',pr:'2/ EN COURS x En levée',ds:'2026-10-31',de:null,p:1,sz:0.675,t:23,uf:13,pm:0},
+  {id:'saintjor19',n:'Saint-Jorioz - Annecy',sh:'Saint-Jorioz -',sp:'Coco AM',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2026-12-01',de:'2027-02-15',p:0.8,sz:5,t:12.3,uf:300,pm:434}
 ];
 const iC={EQ:'#378ADD',BR:'#BA7517',DE:'#7F77DD',AU:'#D85A30',BK:'#2D9B7D'};
 const iL={EQ:'Equity',BR:'Bridge SR',DE:'Demeures',AU:'Autre',BK:'Broker'};
-const iP={EQ:'eq',BR:'br',DE:'de',AU:'au',BK:'bk'};
 
-// --- Catégories de statut (sous-statut extrait de pr, la partie après "x ") ---
+// --- Catégories de statut (sous-statut extrait de pr, la partie après " x ") ---
 const CAT_ORDER=['En levée','Sécurisés','DD en cours'];
 const CAT_KEY={'En levée':'levee','Sécurisés':'secu','DD en cours':'dd'};
 const CAT_RANK={'En levée':0,'Sécurisés':1,'DD en cours':2};
-// Deals "sécurisés" au sens KPI = catégories engagées (En levée + Sécurisés)
 const CATS_SECURISE=['En levée','Sécurisés'];
 function catOf(pr){
   if(!pr)return'';
   const s=String(pr);
   const idx=s.lastIndexOf(' x ');
   const tail=(idx>=0?s.slice(idx+3):s).trim();
-  const hit=CAT_ORDER.find(c=>c.toLowerCase()===tail.toLowerCase());
+  const hit=CAT_ORDER.find(function(c){return c.toLowerCase()===tail.toLowerCase();});
   return hit||tail;
 }
-  function catClass(pr){return CAT_KEY[catOf(pr)]||'dd';}
 
-let sel=new Set(deals.map(d=>d.id));
+let sel=new Set(deals.map(function(d){return d.id;}));
 
 // --- Édition + persistance locale ---
-const DEALS_NOTION=JSON.parse(JSON.stringify(deals));
 try{
   const saved=localStorage.getItem('cre_pnl_deals');
   if(saved){
     const arr=JSON.parse(saved);
     if(Array.isArray(arr)&&arr.length)deals=arr;
-    sel=new Set(deals.map(d=>d.id));
+    sel=new Set(deals.map(function(d){return d.id;}));
   }
 }catch(e){}
 function savePnl(){
@@ -230,81 +194,64 @@ function savePnl(){
 }
 function resetPnl(){
   try{localStorage.removeItem('cre_pnl_deals');}catch(e){}
-  location.href=location.pathname+'?t='+Date.now();
+  location.reload();
 }
 function addDeal(){
   const id='new'+Date.now().toString(36);
-  deals.push({id,n:'Nouveau deal',sh:'Nouveau',sp:'',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.5,sz:1.0,t:0,uf:0,pm:0});
+  deals.push({id:id,n:'Nouveau deal',sh:'Nouveau',sp:'',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.5,sz:1.0,t:0,uf:0,pm:0});
   sel.add(id);savePnl();renderAll();
 }
 function delDeal(id){
-  deals=deals.filter(d=>d.id!==id);sel.delete(id);savePnl();renderAll();
+  deals=deals.filter(function(d){return d.id!==id;});sel.delete(id);savePnl();renderAll();
 }
 
 function fmt(n){if(n===0)return'—';if(n>=1000)return(n/1000).toFixed(1)+' M€';return Math.round(n)+' k€'}
 function fmtD(s){if(!s)return'—';return new Date(s).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})}
-function fmtR(ds,de){if(!ds)return'sans date';return de?fmtD(ds)+' → '+fmtD(de):fmtD(ds)}
 
 function calc(){
-  const s=deals.filter(d=>sel.has(d.id));
-  const isSec=d=>CATS_SECURISE.includes(catOf(d.pr));
-  const uf=s.reduce((a,d)=>a+d.uf,0);
-  const pm=s.reduce((a,d)=>a+d.pm,0);
-  const pmW=s.reduce((a,d)=>a+d.pm*d.p,0);
-  const sz=s.reduce((a,d)=>a+d.sz,0);
-  const tn=s.reduce((a,d)=>d.t>0?a+d.t*d.sz:a,0);
-  const td=s.reduce((a,d)=>d.t>0?a+d.sz:a,0);
-  const ufPond=s.reduce((a,d)=>a+d.uf*d.p,0);
-  const szSec=s.reduce((a,d)=>isSec(d)?a+d.sz:a,0);
-  const ufSec=s.reduce((a,d)=>isSec(d)?a+d.uf:a,0);
-  const pmSec=s.reduce((a,d)=>isSec(d)?a+d.pm:a,0);
+  const s=deals.filter(function(d){return sel.has(d.id);});
+  function isSec(d){return CATS_SECURISE.indexOf(catOf(d.pr))>=0;}
+  const uf=s.reduce(function(a,d){return a+d.uf;},0);
+  const pm=s.reduce(function(a,d){return a+d.pm;},0);
+  const pmW=s.reduce(function(a,d){return a+d.pm*d.p;},0);
+  const sz=s.reduce(function(a,d){return a+d.sz;},0);
+  const tn=s.reduce(function(a,d){return d.t>0?a+d.t*d.sz:a;},0);
+  const td=s.reduce(function(a,d){return d.t>0?a+d.sz:a;},0);
+  const ufPond=s.reduce(function(a,d){return a+d.uf*d.p;},0);
+  const szSec=s.reduce(function(a,d){return isSec(d)?a+d.sz:a;},0);
+  const ufSec=s.reduce(function(a,d){return isSec(d)?a+d.uf:a;},0);
+  const pmSec=s.reduce(function(a,d){return isSec(d)?a+d.pm:a;},0);
   const pnlSec=ufSec+pmSec;
-  return{n:s.length,sz,szSec,uf,ufPond,ufSec,pm,pmW,pmSec,pnlBrut:uf+pm,pnlPond:uf+pmW,pnlSec,tri:td>0?tn/td:0};
+  return{n:s.length,sz:sz,szSec:szSec,uf:uf,ufPond:ufPond,ufSec:ufSec,pm:pm,pmW:pmW,pmSec:pmSec,pnlBrut:uf+pm,pnlPond:uf+pmW,pnlSec:pnlSec,tri:td>0?tn/td:0};
 }
 
 function renderKPIs(){
   const k=calc();
-  document.getElementById('kpis').innerHTML=`
-    <div class="kpi"><div class="kpi-l">Deals</div><div class="kpi-v">${k.n}<span style="font-size:12px;color:#CCC"> /${deals.length}</span></div></div>
-    <div class="kpi"><div class="kpi-l">Notionnel</div><div class="kpi-v">${k.sz.toFixed(1)} M€</div><div class="kpi-s" style="color:#888;font-size:12px">Sécurisé ${k.szSec.toFixed(1)} M€</div><div class="kpi-s" style="color:#555;font-size:12px">À lever ${(k.sz-k.szSec).toFixed(1)} M€</div></div>
-    <div class="kpi">
-      <div class="kpi-l">Upfront</div>
-      <div class="kpi-v">${fmt(k.uf)}</div>
-      <div class="kpi-s" style="color:#888;font-size:12px">Sécurisé ${fmt(k.ufSec)}</div>
-      <div class="kpi-s" style="color:#555;font-size:12px">Prob. ${fmt(k.ufPond)}</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-l">Promote</div>
-      <div class="kpi-v">${fmt(k.pm)}</div>
-      <div class="kpi-s" style="color:#888;font-size:12px">Sécurisé ${fmt(k.pmSec)}</div>
-      <div class="kpi-s" style="color:#555;font-size:12px">Prob. ${fmt(k.pmW)}</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-l">P&L Total</div>
-      <div class="kpi-v">${fmt(k.pnlBrut)}</div>
-      <div class="kpi-s" style="color:#888;font-size:12px">Sécurisé ${fmt(k.pnlSec)}</div>
-      <div class="kpi-s" style="color:#555;font-size:12px">Prob. ${fmt(k.pnlPond)}</div>
-    </div>
-  `;}
+  document.getElementById('kpis').innerHTML=
+    '<div class="kpi"><div class="kpi-l">Deals</div><div class="kpi-v">'+k.n+'<span style="font-size:12px;color:#CCC"> /'+deals.length+'</span></div></div>'+
+    '<div class="kpi"><div class="kpi-l">Notionnel</div><div class="kpi-v">'+k.sz.toFixed(1)+' M€</div><div class="kpi-s" style="color:#888;font-size:12px">Sécurisé '+k.szSec.toFixed(1)+' M€</div><div class="kpi-s" style="color:#555;font-size:12px">À lever '+(k.sz-k.szSec).toFixed(1)+' M€</div></div>'+
+    '<div class="kpi"><div class="kpi-l">Upfront</div><div class="kpi-v">'+fmt(k.uf)+'</div><div class="kpi-s" style="color:#888;font-size:12px">Sécurisé '+fmt(k.ufSec)+'</div><div class="kpi-s" style="color:#555;font-size:12px">Prob. '+fmt(k.ufPond)+'</div></div>'+
+    '<div class="kpi"><div class="kpi-l">Promote</div><div class="kpi-v">'+fmt(k.pm)+'</div><div class="kpi-s" style="color:#888;font-size:12px">Sécurisé '+fmt(k.pmSec)+'</div><div class="kpi-s" style="color:#555;font-size:12px">Prob. '+fmt(k.pmW)+'</div></div>'+
+    '<div class="kpi"><div class="kpi-l">P&L Total</div><div class="kpi-v">'+fmt(k.pnlBrut)+'</div><div class="kpi-s" style="color:#888;font-size:12px">Sécurisé '+fmt(k.pnlSec)+'</div><div class="kpi-s" style="color:#555;font-size:12px">Prob. '+fmt(k.pnlPond)+'</div></div>';
+}
 
-// État du tri : null = tri par défaut (par catégorie de statut, puis proba, puis date)
 let sortState={col:null,dir:1};
 function sortDeals(){
-  const arr=[...deals];
+  const arr=deals.slice();
   if(sortState.col){
     const c=sortState.col,dir=sortState.dir;
-    arr.sort((a,b)=>{
+    arr.sort(function(a,b){
       let va=a[c],vb=b[c];
       if(c==='ds'){va=va||'9999';vb=vb||'9999';return va<vb?-dir:va>vb?dir:0;}
-      if(c==='pr'){va=CAT_RANK[catOf(va)]??9;vb=CAT_RANK[catOf(vb)]??9;return (va-vb)*dir;}
+      if(c==='pr'){va=CAT_RANK[catOf(va)];if(va===undefined)va=9;vb=CAT_RANK[catOf(vb)];if(vb===undefined)vb=9;return (va-vb)*dir;}
       if(typeof va==='number'||c==='sz'||c==='t'||c==='uf'||c==='pm'||c==='p'){return ((va||0)-(vb||0))*dir;}
       return String(va||'').localeCompare(String(vb||''),'fr')*dir;
     });
     return arr;
   }
-  // défaut : catégorie (En levée, Sécurisés, DD en cours), puis proba décroissante, puis date croissante
-  arr.sort((a,b)=>{
-    const ra=CAT_RANK[catOf(a.pr)]??9, rb=CAT_RANK[catOf(b.pr)]??9;
+  arr.sort(function(a,b){
+    let ra=CAT_RANK[catOf(a.pr)];if(ra===undefined)ra=9;
+    let rb=CAT_RANK[catOf(b.pr)];if(rb===undefined)rb=9;
     if(ra!==rb)return ra-rb;
     const dp=(b.p||0)-(a.p||0);
     if(dp!==0)return dp;
@@ -316,67 +263,70 @@ function sortDeals(){
 
 function renderTable(){
   const sorted=sortDeals();
-  const optI=Object.keys(iL).map(k=>`<option value="${k}">${iL[k]}</option>`).join('');
-  const optPr=deals.reduce((acc,d)=>{const v=d.pr;if(v&&!acc.includes(v))acc.push(v);return acc;},[])
-    .sort((a,b)=>(CAT_RANK[catOf(a)]??9)-(CAT_RANK[catOf(b)]??9))
-    .map(p=>`<option value="${p.replace(/"/g,'&quot;')}">${catOf(p)}</option>`).join('');
-  const rows=sorted.map(d=>{
+  const optI=Object.keys(iL).map(function(k){return '<option value="'+k+'">'+iL[k]+'</option>';}).join('');
+  const prVals=[];
+  deals.forEach(function(d){if(d.pr&&prVals.indexOf(d.pr)<0)prVals.push(d.pr);});
+  prVals.sort(function(a,b){let ra=CAT_RANK[catOf(a)];if(ra===undefined)ra=9;let rb=CAT_RANK[catOf(b)];if(rb===undefined)rb=9;return ra-rb;});
+  const optPr=prVals.map(function(p){return '<option value="'+p.replace(/"/g,'&quot;')+'">'+catOf(p)+'</option>';}).join('');
+  const rows=sorted.map(function(d){
     const on=sel.has(d.id);
     const cat=catOf(d.pr);
-    const cc=CAT_KEY[cat]||'dd';
+    let cc=CAT_KEY[cat];if(!cc)cc='dd';
     const nameClass='name-'+cc;
     const prClass='pr-'+cc;
     const isLow=d.p<=0.10;
     const rowClass=(isLow?'low-proba':('cat-'+cc))+(on?'':' off');
     const dsv=d.ds?d.ds:'';
     const pillBg=iC[d.i]||'#888';
-    return`<tr class="${rowClass}" data-id="${d.id}">
-      <td><input class="chk" type="checkbox" ${on?'checked':''} data-id="${d.id}"></td>
-      <td><select class="ed" data-id="${d.id}" data-f="i" style="width:72px;font-size:9px;font-weight:600;color:#FFF;background-color:${pillBg};border-radius:3px;padding:2px 3px;text-align:center">${optI}</select></td>
-      <td><input class="ed ${nameClass}" data-id="${d.id}" data-f="n" value="${(d.n||'').replace(/"/g,'&quot;')}" style="width:128px"><input class="ed sp-inline" data-id="${d.id}" data-f="sp" value="${(d.sp||'').replace(/"/g,'&quot;')}" placeholder="sponsor" style="width:78px"></td>
-      <td><select class="ed ${prClass}" data-id="${d.id}" data-f="pr" style="width:96px">${optPr}</select></td>
-      <td><input class="ed" type="date" data-id="${d.id}" data-f="ds" value="${dsv}" style="width:112px;color:#777;font-size:10.5px"></td>
-      <td class="num"><input class="ed" data-id="${d.id}" data-f="t" value="${d.t}" style="width:34px;text-align:right;color:#666">%</td>
-      <td class="num"><input class="ed" data-id="${d.id}" data-f="sz" value="${(+d.sz).toFixed(2)}" style="width:40px;text-align:right;font-weight:500"> M€</td>
-      <td class="num"><input class="ed" data-id="${d.id}" data-f="uf" value="${d.uf}" style="width:38px;text-align:right;font-weight:500"> k€</td>
-      <td class="num"><input class="ed" data-id="${d.id}" data-f="pm" value="${d.pm}" style="width:42px;text-align:right;font-weight:500"> k€</td>
-      <td class="num"><input class="ed" data-id="${d.id}" data-f="p" value="${Math.round(d.p*100)}" style="width:30px;text-align:right;color:#666">%</td>
-      <td style="text-align:center;width:30px"><button class="delDeal" data-id="${d.id}" title="Supprimer">🗑</button></td>
-    </tr>`;
+    return '<tr class="'+rowClass+'" data-id="'+d.id+'">'+
+      '<td><input class="chk" type="checkbox" '+(on?'checked':'')+' data-id="'+d.id+'"></td>'+
+      '<td><select class="ed" data-id="'+d.id+'" data-f="i" style="width:72px;font-size:9px;font-weight:600;color:#FFF;background-color:'+pillBg+';border-radius:3px;padding:2px 3px;text-align:center">'+optI+'</select></td>'+
+      '<td><input class="ed '+nameClass+'" data-id="'+d.id+'" data-f="n" value="'+(d.n||'').replace(/"/g,'&quot;')+'" style="width:128px"><input class="ed sp-inline" data-id="'+d.id+'" data-f="sp" value="'+(d.sp||'').replace(/"/g,'&quot;')+'" placeholder="sponsor" style="width:78px"></td>'+
+      '<td><select class="ed '+prClass+'" data-id="'+d.id+'" data-f="pr" style="width:96px">'+optPr+'</select></td>'+
+      '<td><input class="ed" type="date" data-id="'+d.id+'" data-f="ds" value="'+dsv+'" style="width:112px;color:#777;font-size:10.5px"></td>'+
+      '<td class="num"><input class="ed" data-id="'+d.id+'" data-f="t" value="'+d.t+'" style="width:34px;text-align:right;color:#666">%</td>'+
+      '<td class="num"><input class="ed" data-id="'+d.id+'" data-f="sz" value="'+(+d.sz).toFixed(2)+'" style="width:40px;text-align:right;font-weight:500"> M€</td>'+
+      '<td class="num"><input class="ed" data-id="'+d.id+'" data-f="uf" value="'+d.uf+'" style="width:38px;text-align:right;font-weight:500"> k€</td>'+
+      '<td class="num"><input class="ed" data-id="'+d.id+'" data-f="pm" value="'+d.pm+'" style="width:42px;text-align:right;font-weight:500"> k€</td>'+
+      '<td class="num"><input class="ed" data-id="'+d.id+'" data-f="p" value="'+Math.round(d.p*100)+'" style="width:30px;text-align:right;color:#666">%</td>'+
+      '<td style="text-align:center;width:30px"><button class="delDeal" data-id="'+d.id+'" title="Supprimer">🗑</button></td>'+
+    '</tr>';
   });
-  // Sous-totaux par catégorie (uniquement en tri par défaut)
   let html='';
   if(!sortState.col){
-    const fmtSz=(v)=>{const r=Math.round(v*100)/100;return r.toFixed(r%1===0?0:(r*10%1===0?1:2));};
+    function fmtSz(v){const r=Math.round(v*100)/100;return r.toFixed(r%1===0?0:(r*10%1===0?1:2));}
     let i=0;
     while(i<sorted.length){
       const grp=catOf(sorted[i].pr);
       let j=i,ts=0,tu=0,tp=0,ps=0,pu=0,pp=0;
-      while(j<sorted.length&&catOf(sorted[j].pr)===grp){if(sel.has(sorted[j].id)){const d=sorted[j];ts+=d.sz||0;tu+=d.uf||0;tp+=d.pm||0;ps+=(d.sz||0)*(d.p||0);pu+=(d.uf||0)*(d.p||0);pp+=(d.pm||0)*(d.p||0);}j++;}
+      while(j<sorted.length&&catOf(sorted[j].pr)===grp){
+        if(sel.has(sorted[j].id)){const d=sorted[j];ts+=d.sz||0;tu+=d.uf||0;tp+=d.pm||0;ps+=(d.sz||0)*(d.p||0);pu+=(d.uf||0)*(d.p||0);pp+=(d.pm||0)*(d.p||0);}
+        j++;
+      }
       for(let k=i;k<j;k++)html+=rows[k];
-      html+=`<tr class="subtotal-row"><td></td><td></td><td style="font-weight:600;font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.04em">Total ${grp}</td><td></td><td></td><td></td><td class="num" style="font-weight:600">${fmtSz(ts)} M€</td><td class="num" style="font-weight:600">${Math.round(tu)} k€</td><td class="num" style="font-weight:600">${Math.round(tp)} k€</td><td></td><td></td></tr>`;
-      html+=`<tr class="subtotal-row"><td></td><td></td><td style="font-weight:500;font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.04em;font-style:italic">Probabilisé</td><td></td><td></td><td></td><td class="num" style="font-weight:500;color:#999;font-style:italic">${fmtSz(ps)} M€</td><td class="num" style="font-weight:500;color:#999;font-style:italic">${Math.round(pu)} k€</td><td class="num" style="font-weight:500;color:#999;font-style:italic">${Math.round(pp)} k€</td><td></td><td></td></tr>`;
+      html+='<tr class="subtotal-row"><td></td><td></td><td style="font-weight:600;font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.04em">Total '+grp+'</td><td></td><td></td><td></td><td class="num" style="font-weight:600">'+fmtSz(ts)+' M€</td><td class="num" style="font-weight:600">'+Math.round(tu)+' k€</td><td class="num" style="font-weight:600">'+Math.round(tp)+' k€</td><td></td><td></td></tr>';
+      html+='<tr class="subtotal-row"><td></td><td></td><td style="font-weight:500;font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.04em;font-style:italic">Probabilisé</td><td></td><td></td><td></td><td class="num" style="font-weight:500;color:#999;font-style:italic">'+fmtSz(ps)+' M€</td><td class="num" style="font-weight:500;color:#999;font-style:italic">'+Math.round(pu)+' k€</td><td class="num" style="font-weight:500;color:#999;font-style:italic">'+Math.round(pp)+' k€</td><td></td><td></td></tr>';
       i=j;
     }
   }else{
     html=rows.join('');
   }
   document.getElementById('tbody').innerHTML=html;
-  document.querySelectorAll('#tbody select.ed').forEach(s=>{
-    const d=deals.find(x=>x.id===s.dataset.id);if(!d)return;
+  document.querySelectorAll('#tbody select.ed').forEach(function(s){
+    const d=deals.find(function(x){return x.id===s.dataset.id;});if(!d)return;
     s.value=d[s.dataset.f];
   });
-  document.querySelectorAll('#tbody input.chk').forEach(cb=>{
-    cb.addEventListener('change',e=>{
+  document.querySelectorAll('#tbody input.chk').forEach(function(cb){
+    cb.addEventListener('change',function(e){
       const id=e.target.dataset.id;
       if(e.target.checked)sel.add(id);else sel.delete(id);
       renderAll();
     });
   });
-  document.querySelectorAll('#tbody .ed').forEach(inp=>{
-    inp.addEventListener('change',e=>{
+  document.querySelectorAll('#tbody .ed').forEach(function(inp){
+    inp.addEventListener('change',function(e){
       const id=e.target.dataset.id,f=e.target.dataset.f;
-      const d=deals.find(x=>x.id===id);if(!d)return;
+      const d=deals.find(function(x){return x.id===id;});if(!d)return;
       let v=e.target.value;
       if(f==='sz'||f==='t'||f==='uf'||f==='pm'){v=parseFloat(String(v).replace(',','.'));if(isNaN(v))v=0;d[f]=v;}
       else if(f==='p'){v=parseFloat(String(v).replace(',','.'));if(isNaN(v))v=0;d.p=Math.max(0,Math.min(100,v))/100;}
@@ -384,12 +334,12 @@ function renderTable(){
       else{d[f]=v;}
       savePnl();renderAll();
     });
-    inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.type!=='date')e.target.blur();});
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.type!=='date')e.target.blur();});
   });
-  document.querySelectorAll('#tbody .delDeal').forEach(b=>{
-    b.addEventListener('click',e=>{
+  document.querySelectorAll('#tbody .delDeal').forEach(function(b){
+    b.addEventListener('click',function(e){
       const id=e.currentTarget.dataset.id;
-      const d=deals.find(x=>x.id===id);
+      const d=deals.find(function(x){return x.id===id;});
       if(confirm('Supprimer le deal « '+(d?d.n:'')+' » ?'))delDeal(id);
     });
   });
@@ -406,135 +356,135 @@ function renderTimeline(){
   let s='';
   for(let i=0;i<=months.length;i++){
     const xx=(pL+(i/months.length)*iW).toFixed(1);
-    s+=`<line x1="${xx}" y1="${pT}" x2="${xx}" y2="${H-pB}" stroke="#E8E4DC" stroke-width="0.5"/>`;
+    s+='<line x1="'+xx+'" y1="'+pT+'" x2="'+xx+'" y2="'+(H-pB)+'" stroke="#E8E4DC" stroke-width="0.5"/>';
     if(i<months.length){
       const mx=(pL+((i+0.5)/months.length)*iW).toFixed(1);
-      s+=`<text x="${mx}" y="${H-pB+16}" text-anchor="middle" font-size="10" fill="#BBB" font-family="-apple-system,sans-serif">${months[i]}</text>`;
+      s+='<text x="'+mx+'" y="'+(H-pB+16)+'" text-anchor="middle" font-size="10" fill="#BBB" font-family="-apple-system,sans-serif">'+months[i]+'</text>';
     }
   }
   const today=new Date('2026-05-19');
   if(today>=startD&&today<=endD){
     const tx=xp(today).toFixed(1);
-    s+=`<line x1="${tx}" y1="${pT}" x2="${tx}" y2="${H-pB}" stroke="#1F7A4D" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.8"/>`;
-    s+=`<text x="${(parseFloat(tx)+4).toFixed(1)}" y="${pT-8}" font-size="9" fill="#1F7A4D" font-family="-apple-system,sans-serif" font-weight="600">auj.</text>`;
+    s+='<line x1="'+tx+'" y1="'+pT+'" x2="'+tx+'" y2="'+(H-pB)+'" stroke="#1F7A4D" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.8"/>';
+    s+='<text x="'+(parseFloat(tx)+4).toFixed(1)+'" y="'+(pT-8)+'" font-size="9" fill="#1F7A4D" font-family="-apple-system,sans-serif" font-weight="600">auj.</text>';
   }
-  const dwd=deals.filter(d=>d.ds&&sel.has(d.id));
+  const dwd=deals.filter(function(d){return d.ds&&sel.has(d.id);});
   if(!dwd.length){
-    s+=`<text x="${W/2}" y="${H/2+5}" text-anchor="middle" font-size="13" fill="#CCC" font-family="-apple-system,sans-serif">Aucun deal avec une date sélectionné</text>`;
+    s+='<text x="'+(W/2)+'" y="'+(H/2+5)+'" text-anchor="middle" font-size="13" fill="#CCC" font-family="-apple-system,sans-serif">Aucun deal avec une date sélectionné</text>';
     svg.innerHTML=s;return;
   }
-  const rv=sz=>Math.round(7+17*Math.sqrt(Math.min(sz,20)/20));
-  dwd.sort((a,b)=>new Date(a.ds)-new Date(b.ds));
+  function rv(sz){return Math.round(7+17*Math.sqrt(Math.min(sz,20)/20));}
+  dwd.sort(function(a,b){return new Date(a.ds)-new Date(b.ds);});
   const lanes=[];
-  dwd.forEach(d=>{
+  dwd.forEach(function(d){
     const sx=xp(d.ds),ex=d.de?xp(d.de):sx,r=rv(d.sz);
     let li=0;
     while(li<7){
       const lane=lanes[li]||[];
-      const conflict=lane.some(it=>!(it.ex<sx-r*2.2||it.sx>ex+r*2.2));
-      if(!conflict){lanes[li]=lane;lanes[li].push({sx,ex});break}
+      const conflict=lane.some(function(it){return !(it.ex<sx-r*2.2||it.sx>ex+r*2.2);});
+      if(!conflict){lanes[li]=lane;lanes[li].push({sx:sx,ex:ex});break}
       li++;
     }
     d._l=Math.min(li,6);
   });
-  const nLanes=Math.max(1,...dwd.map(d=>d._l+1));
+  let nLanes=1;dwd.forEach(function(d){if(d._l+1>nLanes)nLanes=d._l+1;});
   const lh=(H-pT-pB)/Math.max(nLanes,4);
-  dwd.forEach(d=>{
+  dwd.forEach(function(d){
     const sx=xp(d.ds),ex=d.de?xp(d.de):sx;
     const cy=pT+(d._l+0.5)*lh;
     const r=rv(d.sz);
     const c=iC[d.i];
     if(d.de){
-      s+=`<line x1="${sx.toFixed(1)}" y1="${cy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${cy.toFixed(1)}" stroke="${c}" stroke-width="2.5" opacity="0.45"/>`;
-      s+=`<circle cx="${ex.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(r*0.5).toFixed(1)}" fill="${c}" stroke="white" stroke-width="1.5" opacity="0.5"/>`;
+      s+='<line x1="'+sx.toFixed(1)+'" y1="'+cy.toFixed(1)+'" x2="'+ex.toFixed(1)+'" y2="'+cy.toFixed(1)+'" stroke="'+c+'" stroke-width="2.5" opacity="0.45"/>';
+      s+='<circle cx="'+ex.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+(r*0.5).toFixed(1)+'" fill="'+c+'" stroke="white" stroke-width="1.5" opacity="0.5"/>';
     }
-    s+=`<circle cx="${sx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="${c}" stroke="white" stroke-width="2" opacity="0.92"/>`;
+    s+='<circle cx="'+sx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+r+'" fill="'+c+'" stroke="white" stroke-width="2" opacity="0.92"/>';
     if(r>=11){
       const fs=Math.min(10,Math.floor(r*0.52));
       const lbl=d.sz>=10?Math.round(d.sz)+'M':d.sz.toFixed(1)+'M';
-      s+=`<text x="${sx.toFixed(1)}" y="${cy.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="${fs}" fill="white" font-weight="600" font-family="-apple-system,sans-serif">${lbl}</text>`;
+      s+='<text x="'+sx.toFixed(1)+'" y="'+cy.toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" font-size="'+fs+'" fill="white" font-weight="600" font-family="-apple-system,sans-serif">'+lbl+'</text>';
     } else {
       const lbl=d.sz.toFixed(1)+'M';
-      s+=`<text x="${sx.toFixed(1)}" y="${(cy+r+13).toFixed(1)}" text-anchor="middle" font-size="9" fill="#888" font-family="-apple-system,sans-serif">${lbl}</text>`;
+      s+='<text x="'+sx.toFixed(1)+'" y="'+(cy+r+13).toFixed(1)+'" text-anchor="middle" font-size="9" fill="#888" font-family="-apple-system,sans-serif">'+lbl+'</text>';
     }
-    const nameCol=catOf(d.pr)==='En levée'?'#1F7A4D':(catOf(d.pr)==='Sécurisés'?'#185FA5':'#1A1A1A');
-    s+=`<text x="${sx.toFixed(1)}" y="${(cy-r-5).toFixed(1)}" text-anchor="middle" font-size="10" fill="${nameCol}" font-weight="600" font-family="-apple-system,sans-serif">${d.sh}</text>`;
+    const cat=catOf(d.pr);
+    const nameCol=cat==='En levée'?'#1F7A4D':(cat==='Sécurisés'?'#185FA5':'#1A1A1A');
+    s+='<text x="'+sx.toFixed(1)+'" y="'+(cy-r-5).toFixed(1)+'" text-anchor="middle" font-size="10" fill="'+nameCol+'" font-weight="600" font-family="-apple-system,sans-serif">'+d.sh+'</text>';
   });
   svg.innerHTML=s;
 }
 
 function renderChart(){
-  const s=deals.filter(d=>sel.has(d.id));
+  const s=deals.filter(function(d){return sel.has(d.id);});
   const wrap=document.getElementById('pnl-svg-wrap');
   if(!s.length){wrap.innerHTML='<p style="color:#CCC;text-align:center;padding:2rem;font-size:13px">Aucun deal sélectionné</p>';return}
   const ROW=36,pL=130,pR=60,pT=10,pB=28;
   const W=wrap.offsetWidth||820;
   const H=s.length*ROW+pT+pB;
-  const maxV=Math.max(10,...s.map(d=>d.uf+d.pm));
+  let maxV=10;s.forEach(function(d){if(d.uf+d.pm>maxV)maxV=d.uf+d.pm;});
   const iW=W-pL-pR;
   function bw(v){return Math.max(0,(v/maxV)*iW)}
   const TICKS=4;
-  let g=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}">`;
+  let g='<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'">';
   for(let i=0;i<=TICKS;i++){
     const x=pL+(i/TICKS)*iW;
     const v=Math.round((i/TICKS)*maxV);
-    g+=`<line x1="${x.toFixed(0)}" y1="${pT}" x2="${x.toFixed(0)}" y2="${H-pB}" stroke="#EAE7E0" stroke-width="0.5"/>`;
-    g+=`<text x="${x.toFixed(0)}" y="${H-pB+14}" text-anchor="middle" font-size="10" fill="#BBB" font-family="-apple-system,sans-serif">${v} k€</text>`;
+    g+='<line x1="'+x.toFixed(0)+'" y1="'+pT+'" x2="'+x.toFixed(0)+'" y2="'+(H-pB)+'" stroke="#EAE7E0" stroke-width="0.5"/>';
+    g+='<text x="'+x.toFixed(0)+'" y="'+(H-pB+14)+'" text-anchor="middle" font-size="10" fill="#BBB" font-family="-apple-system,sans-serif">'+v+' k€</text>';
   }
-  s.forEach((d,i)=>{
+  s.forEach(function(d,i){
     const y=pT+i*ROW;
     const cy=y+ROW/2;
     const c=iC[d.i];
     const uw=bw(d.uf),pw=bw(d.pm);
     const cat=catOf(d.pr);
     const nc=cat==='En levée'?'#1F7A4D':(cat==='Sécurisés'?'#185FA5':'#9A7020');
-    g+=`<text x="${pL-7}" y="${cy+4}" text-anchor="end" font-size="11" fill="${nc}" font-weight="500" font-family="-apple-system,sans-serif">${d.sh}</text>`;
+    g+='<text x="'+(pL-7)+'" y="'+(cy+4)+'" text-anchor="end" font-size="11" fill="'+nc+'" font-weight="500" font-family="-apple-system,sans-serif">'+d.sh+'</text>';
     if(uw>0){
-      g+=`<rect x="${pL}" y="${cy-11}" width="${uw.toFixed(1)}" height="14" rx="2" fill="${c}" opacity="0.92"/>`;
-      if(d.pm>0 && uw>28){const ufl=String(d.uf)+' k€';const ufs=Math.min(10,Math.max(7,Math.floor(uw/(ufl.length*6.2))));g+=`<text x="${(pL+uw/2).toFixed(0)}" y="${cy-4}" dominant-baseline="middle" text-anchor="middle" font-size="${ufs}" fill="#CCC" font-family="-apple-system,sans-serif">${ufl}</text>`;}
+      g+='<rect x="'+pL+'" y="'+(cy-11)+'" width="'+uw.toFixed(1)+'" height="14" rx="2" fill="'+c+'" opacity="0.92"/>';
+      if(d.pm>0 && uw>28){const ufl=String(d.uf)+' k€';const ufs=Math.min(10,Math.max(7,Math.floor(uw/(ufl.length*6.2))));g+='<text x="'+(pL+uw/2).toFixed(0)+'" y="'+(cy-4)+'" dominant-baseline="middle" text-anchor="middle" font-size="'+ufs+'" fill="#CCC" font-family="-apple-system,sans-serif">'+ufl+'</text>';}
     }
     if(pw>0){
-      g+=`<rect x="${(pL+uw).toFixed(1)}" y="${cy-11}" width="${pw.toFixed(1)}" height="14" rx="2" fill="${c}" opacity="0.4"/>`;
-      if(pw>28){const pml=String(d.pm)+' k€';const pfs=Math.min(10,Math.max(7,Math.floor(pw/(pml.length*6.2))));g+=`<text x="${(pL+uw+pw/2).toFixed(0)}" y="${cy-4}" dominant-baseline="middle" text-anchor="middle" font-size="${pfs}" fill="#777" font-family="-apple-system,sans-serif">${pml}</text>`;}
+      g+='<rect x="'+(pL+uw).toFixed(1)+'" y="'+(cy-11)+'" width="'+pw.toFixed(1)+'" height="14" rx="2" fill="'+c+'" opacity="0.4"/>';
+      if(pw>28){const pml=String(d.pm)+' k€';const pfs=Math.min(10,Math.max(7,Math.floor(pw/(pml.length*6.2))));g+='<text x="'+(pL+uw+pw/2).toFixed(0)+'" y="'+(cy-4)+'" dominant-baseline="middle" text-anchor="middle" font-size="'+pfs+'" fill="#777" font-family="-apple-system,sans-serif">'+pml+'</text>';}
     }
     const tot=d.uf+d.pm;
-    if(tot>0) g+=`<text x="${(pL+uw+pw+6).toFixed(0)}" y="${cy-4}" dominant-baseline="middle" text-anchor="start" font-size="11" font-weight="600" fill="#1A1A1A" font-family="-apple-system,sans-serif">${tot} k€</text>`;
-    if(i<s.length-1) g+=`<line x1="${pL}" y1="${y+ROW}" x2="${(pL+iW).toFixed(0)}" y2="${y+ROW}" stroke="#F0EDE6" stroke-width="0.5"/>`;
+    if(tot>0) g+='<text x="'+(pL+uw+pw+6).toFixed(0)+'" y="'+(cy-4)+'" dominant-baseline="middle" text-anchor="start" font-size="11" font-weight="600" fill="#1A1A1A" font-family="-apple-system,sans-serif">'+tot+' k€</text>';
+    if(i<s.length-1) g+='<line x1="'+pL+'" y1="'+(y+ROW)+'" x2="'+(pL+iW).toFixed(0)+'" y2="'+(y+ROW)+'" stroke="#F0EDE6" stroke-width="0.5"/>';
   });
   g+='</svg>';
   wrap.innerHTML=g;
 }
 
-
 function renderMargin(){
-  const s=deals.filter(d=>sel.has(d.id));
+  const s=deals.filter(function(d){return sel.has(d.id);});
   const wrap=document.getElementById('margin-wrap');
   if(!s.length){wrap.innerHTML='<p style="color:#CCC;text-align:center;padding:2rem;font-size:13px">Aucun deal sélectionné</p>';return}
-  const withM=s.map(d=>({...d,marg:d.sz>0?(d.uf+d.pm)/(d.sz*1000)*100:0}));
-  withM.sort((a,b)=>b.marg-a.marg);
+  const withM=s.map(function(d){const o={};for(const k in d)o[k]=d[k];o.marg=d.sz>0?(d.uf+d.pm)/(d.sz*1000)*100:0;return o;});
+  withM.sort(function(a,b){return b.marg-a.marg;});
   const W=880,ROW=34,pL=130,pR=80,pT=10,pB=28;
   const H=withM.length*ROW+pT+pB;
-  const maxM=Math.max(1,...withM.map(d=>d.marg));
+  let maxM=1;withM.forEach(function(d){if(d.marg>maxM)maxM=d.marg;});
   const iW=W-pL-pR;
   function bw(m){return Math.max(0,(m/maxM)*iW)}
   const TICKS=5;
-  let g=`<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}">`;
+  let g='<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'">';
   for(let i=0;i<=TICKS;i++){
     const x=pL+(i/TICKS)*iW,v=(i/TICKS*maxM).toFixed(1);
-    g+=`<line x1="${x.toFixed(0)}" y1="${pT}" x2="${x.toFixed(0)}" y2="${H-pB}" stroke="#EAE7E0" stroke-width="0.5"/>`;
-    g+=`<text x="${x.toFixed(0)}" y="${H-pB+14}" text-anchor="middle" font-size="10" fill="#BBB" font-family="-apple-system,sans-serif">${v}%</text>`;
+    g+='<line x1="'+x.toFixed(0)+'" y1="'+pT+'" x2="'+x.toFixed(0)+'" y2="'+(H-pB)+'" stroke="#EAE7E0" stroke-width="0.5"/>';
+    g+='<text x="'+x.toFixed(0)+'" y="'+(H-pB+14)+'" text-anchor="middle" font-size="10" fill="#BBB" font-family="-apple-system,sans-serif">'+v+'%</text>';
   }
-  withM.forEach((d,i)=>{
+  withM.forEach(function(d,i){
     const y=pT+i*ROW,cy=y+ROW/2;
     const c=iC[d.i],bwidth=bw(d.marg);
     const cat=catOf(d.pr);
     const nc=cat==='En levée'?'#1F7A4D':(cat==='Sécurisés'?'#185FA5':'#9A7020');
-    g+=`<text x="${pL-7}" y="${cy}" dominant-baseline="middle" text-anchor="end" font-size="11" fill="${nc}" font-weight="500" font-family="-apple-system,sans-serif">${d.sh}</text>`;
-    if(bwidth>0) g+=`<rect x="${pL}" y="${cy-11}" width="${bwidth.toFixed(1)}" height="14" rx="2" fill="${c}" opacity="0.88"/>`;
+    g+='<text x="'+(pL-7)+'" y="'+cy+'" dominant-baseline="middle" text-anchor="end" font-size="11" fill="'+nc+'" font-weight="500" font-family="-apple-system,sans-serif">'+d.sh+'</text>';
+    if(bwidth>0) g+='<rect x="'+pL+'" y="'+(cy-11)+'" width="'+bwidth.toFixed(1)+'" height="14" rx="2" fill="'+c+'" opacity="0.88"/>';
     const lbl=d.marg.toFixed(1)+'%';
-    if(bwidth>32) g+=`<text x="${(pL+bwidth/2).toFixed(0)}" y="${cy}" dominant-baseline="middle" text-anchor="middle" font-size="9" fill="white" font-family="-apple-system,sans-serif">${lbl}</text>`;
-    g+=`<text x="${(pL+bwidth+6).toFixed(0)}" y="${cy}" dominant-baseline="middle" text-anchor="start" font-size="11" font-weight="600" fill="#1A1A1A" font-family="-apple-system,sans-serif">${lbl}</text>`;
-    if(i<withM.length-1) g+=`<line x1="${pL}" y1="${y+ROW}" x2="${(pL+iW).toFixed(0)}" y2="${y+ROW}" stroke="#F0EDE6" stroke-width="0.5"/>`;
+    if(bwidth>32) g+='<text x="'+(pL+bwidth/2).toFixed(0)+'" y="'+cy+'" dominant-baseline="middle" text-anchor="middle" font-size="9" fill="white" font-family="-apple-system,sans-serif">'+lbl+'</text>';
+    g+='<text x="'+(pL+bwidth+6).toFixed(0)+'" y="'+cy+'" dominant-baseline="middle" text-anchor="start" font-size="11" font-weight="600" fill="#1A1A1A" font-family="-apple-system,sans-serif">'+lbl+'</text>';
+    if(i<withM.length-1) g+='<line x1="'+pL+'" y1="'+(y+ROW)+'" x2="'+(pL+iW).toFixed(0)+'" y2="'+(y+ROW)+'" stroke="#F0EDE6" stroke-width="0.5"/>';
   });
   g+='</svg>';
   wrap.innerHTML=g;
@@ -542,8 +492,8 @@ function renderMargin(){
 
 function updateFilterCounts(){
   const tot=deals.length;
-  const cnt=c=>deals.filter(d=>catOf(d.pr)===c).length;
-  const set=(a,txt)=>{const b=document.querySelector('#flt button[data-a="'+a+'"]');if(b)b.textContent=txt;};
+  function cnt(c){return deals.filter(function(d){return catOf(d.pr)===c;}).length;}
+  function set(a,txt){const b=document.querySelector('#flt button[data-a="'+a+'"]');if(b)b.textContent=txt;}
   set('all','Tous ('+tot+')');
   set('levee','En levée ('+cnt('En levée')+')');
   set('secu','Sécurisés ('+cnt('Sécurisés')+')');
@@ -555,32 +505,32 @@ function updateSubline(){
 }
 function renderAll(){renderKPIs();renderTable();renderTimeline();renderChart();renderMargin();updateFilterCounts();updateSubline();updateSortArrows()}
 
-document.getElementById('flt').addEventListener('click',e=>{
+document.getElementById('flt').addEventListener('click',function(e){
   const a=e.target.dataset.a;if(!a)return;
-  if(a==='all')sel=new Set(deals.map(d=>d.id));
+  if(a==='all')sel=new Set(deals.map(function(d){return d.id;}));
   else if(a==='none')sel=new Set();
-  else if(a==='levee')sel=new Set(deals.filter(d=>catOf(d.pr)==='En levée').map(d=>d.id));
-  else if(a==='secu')sel=new Set(deals.filter(d=>catOf(d.pr)==='Sécurisés').map(d=>d.id));
-  else if(a==='dd')sel=new Set(deals.filter(d=>catOf(d.pr)==='DD en cours').map(d=>d.id));
-  else if(a==='high')sel=new Set(deals.filter(d=>d.p>=0.75).map(d=>d.id));
-  else if(a==='conservative')sel=new Set(deals.filter(d=>d.p>=0.50).map(d=>d.id));
-  document.querySelectorAll('#flt button').forEach(b=>b.classList.remove('active'));
+  else if(a==='levee')sel=new Set(deals.filter(function(d){return catOf(d.pr)==='En levée';}).map(function(d){return d.id;}));
+  else if(a==='secu')sel=new Set(deals.filter(function(d){return catOf(d.pr)==='Sécurisés';}).map(function(d){return d.id;}));
+  else if(a==='dd')sel=new Set(deals.filter(function(d){return catOf(d.pr)==='DD en cours';}).map(function(d){return d.id;}));
+  else if(a==='high')sel=new Set(deals.filter(function(d){return d.p>=0.75;}).map(function(d){return d.id;}));
+  else if(a==='conservative')sel=new Set(deals.filter(function(d){return d.p>=0.50;}).map(function(d){return d.id;}));
+  document.querySelectorAll('#flt button').forEach(function(b){b.classList.remove('active');});
   e.target.classList.add('active');
   renderAll();
 });
 
 const _rb=document.getElementById('resetPnlBtn');
-if(_rb)_rb.addEventListener('click',()=>{if(confirm('Réinitialiser toutes les valeurs aux données d\\'origine ? Vos modifications locales seront effacées.'))resetPnl();});
+if(_rb)_rb.addEventListener('click',function(){if(confirm('Réinitialiser toutes les valeurs aux données d\'origine ? Vos modifications locales seront effacées.'))resetPnl();});
 const _ab=document.getElementById('addDealBtn');
 if(_ab)_ab.addEventListener('click',addDeal);
 
 const _rf=document.getElementById('refreshNotionBtn');
-if(_rf)_rf.addEventListener('click',()=>{
+if(_rf)_rf.addEventListener('click',function(){
   window.open('https://github.com/rchassard-lang/simulateur-pnl/actions/workflows/refresh-pnl.yml','_blank');
 });
 
-document.querySelectorAll('th.sorth').forEach(th=>{
-  th.addEventListener('click',()=>{
+document.querySelectorAll('th.sorth').forEach(function(th){
+  th.addEventListener('click',function(){
     const c=th.dataset.col;
     if(sortState.col===c){sortState.dir=-sortState.dir;}
     else{sortState.col=c;sortState.dir=1;}
@@ -588,25 +538,14 @@ document.querySelectorAll('th.sorth').forEach(th=>{
   });
 });
 function updateSortArrows(){
-  document.querySelectorAll('th.sorth').forEach(th=>{
+  document.querySelectorAll('th.sorth').forEach(function(th){
     const old=th.querySelector('.ar');if(old)old.remove();
     if(sortState.col===th.dataset.col){
-      const s=document.createElement('span');s.className='ar';s.textContent=sortState.dir===1?'▲':'▼';
-      th.appendChild(s);
+      const sp=document.createElement('span');sp.className='ar';sp.textContent=sortState.dir===1?'▲':'▼';
+      th.appendChild(sp);
     }
   });
 }
-
-(function(){
-  var PASS='cre2026';
-  var gate=document.getElementById('gate');
-  if(sessionStorage.getItem('cre_liq_ok')==='1'){gate.classList.add('hidden');}
-  document.getElementById('pwBtn').onclick=function(){
-    if(document.getElementById('pw').value===PASS){sessionStorage.setItem('cre_liq_ok','1');gate.classList.add('hidden');}
-    else{document.getElementById('pwErr').textContent='Mot de passe incorrect.';}
-  };
-  document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('pwBtn').click();});
-})();
 
 renderAll();
 </script>
