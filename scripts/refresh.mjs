@@ -12,12 +12,8 @@ const INDEX_PATH = "index.html";
 
 // Propriété de statut dans Notion (nom exact, emojis inclus).
 const STATUT_PROP = "STATUT ‼️";
-// Valeurs = deals "vivants" à inclure dans le simulateur.
-const STATUTS = [
-  "2/ EN COURS x En levée",
-  "2/ EN COURS x Sécurisés",
-  "2/ EN COURS x DD en cours",
-];
+// Logique liste noire : on inclut TOUT sauf ces statuts (et sauf les statuts vides).
+const STATUTS_EXCLUS = ["1/ INVESTI", "3/ DEAD"];
 
 const INSTRUMENT_MAP = {
   "EQUITY": "EQ", "BRIDGE SENIOR": "BR", "BRIDGE MEZZ": "BR",
@@ -35,6 +31,7 @@ const getDateStart = (p) => p?.date?.start || null;
 const getDateEnd = (p) => p?.date?.end || null;
 const clean = (s) => (s || "").replace(/\s+/g, " ").trim();
 const esc = (s) => (s || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+const norm = (s) => (s || "").normalize("NFC").trim();
 
 function makeId(nom, i) {
   const base = (nom || "deal").toLowerCase()
@@ -43,8 +40,8 @@ function makeId(nom, i) {
   return (base || "d") + i;
 }
 
-// Vérifie que la propriété de statut et ses valeurs existent avant de requêter.
-// Log clair en cas de renommage, au lieu d'un stack trace Notion.
+// Vérifie que la propriété de statut existe et que les valeurs exclues sont bien
+// des options réelles (sinon l'exclusion serait silencieusement sans effet).
 async function checkSchema() {
   const db = await notion.databases.retrieve({ database_id: DATABASE_ID });
   const props = db.properties || {};
@@ -54,13 +51,13 @@ async function checkSchema() {
     process.exit(1);
   }
   const options = (props[STATUT_PROP].select?.options || []).map((o) => o.name);
-  const manquantes = STATUTS.filter((v) => !options.includes(v));
+  const manquantes = STATUTS_EXCLUS.filter((v) => !options.includes(v));
   if (manquantes.length) {
-    console.error(`Valeurs de statut introuvables : ${manquantes.join(" | ")}`);
+    console.error(`Valeurs exclues introuvables (exclusion sans effet) : ${manquantes.join(" | ")}`);
     console.error(`Valeurs disponibles : ${options.join(" | ")}`);
     process.exit(1);
   }
-  console.log(`Schema OK — statut "${STATUT_PROP}", ${STATUTS.length} valeur(s) filtrée(s).`);
+  console.log(`Schema OK — statut "${STATUT_PROP}", exclusions : ${STATUTS_EXCLUS.join(" | ")}`);
 }
 
 async function fetchDeals() {
@@ -71,12 +68,17 @@ async function fetchDeals() {
       database_id: DATABASE_ID,
       start_cursor: cursor,
       page_size: 100,
-      filter: { or: STATUTS.map((v) => ({ property: STATUT_PROP, select: { equals: v } })) },
+      // Pas de filtre serveur : filtrage en JS (robuste aux variantes de libellé/caractères).
     });
     pages.push(...res.results);
     cursor = res.has_more ? res.next_cursor : undefined;
   } while (cursor);
-  return pages;
+  const exclus = STATUTS_EXCLUS.map(norm);
+  return pages.filter((pg) => {
+    const s = norm(getSelect(P(pg, STATUT_PROP)));
+    if (s === "") return false;          // exclut les statuts vides
+    return !exclus.includes(s);          // exclut 1/ INVESTI et 3/ DEAD
+  });
 }
 
 function pageToDeal(pg, i) {
