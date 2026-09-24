@@ -1,9 +1,8 @@
 // refresh.mjs — Régénère le bloc `let deals=[...]` de index.html depuis Notion.
-// Node 20+. Dépendance : @notionhq/client v2.x (utilisé pour retrieve).
-// La query passe par l'endpoint REST data source (API Notion 2025-09+).
+// Node 20+. Dépendance : @notionhq/client v2.x (présent mais non utilisé pour la query).
+// Query + schéma via l'endpoint REST data source (API Notion 2025-09-03).
 // Env : NOTION_TOKEN (secret), DATABASE_ID (défaut ci-dessous), DATA_SOURCE_ID (optionnel)
 
-import { Client } from "@notionhq/client";
 import { readFileSync, writeFileSync } from "node:fs";
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
@@ -21,7 +20,6 @@ const INSTRUMENT_MAP = {
 };
 
 if (!NOTION_TOKEN) { console.error("NOTION_TOKEN manquant."); process.exit(1); }
-const notion = new Client({ auth: NOTION_TOKEN });
 
 const P = (pg, n) => pg.properties[n];
 const getTitle = (p) => (p?.title || []).map((x) => x.plain_text).join("").trim();
@@ -40,24 +38,7 @@ function makeId(nom, i) {
   return (base || "d") + i;
 }
 
-// Appel REST direct à l'API Notion (le SDK v2 n'expose pas les data sources).
-async function notionFetch(path, body) {
-  const res = await fetch(`https://api.notion.com/v1${path}`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${NOTION_TOKEN}`,
-      "Notion-Version": NOTION_VERSION,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body || {}),
-  });
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(`Notion ${path} ${res.status} : ${txt}`);
-  }
-  return res.json();
-}
-
+// --- Appels REST directs (le SDK v2 n'expose pas les data sources) ---
 async function notionGet(path) {
   const res = await fetch(`https://api.notion.com/v1${path}`, {
     method: "GET",
@@ -73,14 +54,47 @@ async function notionGet(path) {
   return res.json();
 }
 
-// Résout l'ID de data source et valide la propriété de statut + les exclusions.
-async function resolveSourceAndCheck() {
-  const db = await notionGet(`/databases/${DATABASE_ID}`);
+async function notionPost(path, body) {
+  const res = await fetch(`https://api.notion.com/v1${path}`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${NOTION_TOKEN}`,
+      "Notion-Version": NOTION_VERSION,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body || {}),
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Notion POST ${path} ${res.status} : ${txt}`);
+  }
+  return res.json();
+}
 
-  // Vérif propriété de statut sur le schéma de la database.
-  const props = db.properties || {};
+// Résout la data source, puis lit les propriétés SUR la data source (API 2025-09+).
+async function resolveSourceAndCheck() {
+  // 1) La database ne sert qu'à trouver la/les data source(s).
+  const db = await notionGet(`/databases/${DATABASE_ID}`);
+  let dsId = DATA_SOURCE_ID;
+  if (!dsId) {
+    const sources = db.data_sources || [];
+    if (sources.length === 0) {
+      console.error("Aucune data source sur cette database.");
+      process.exit(1);
+    }
+    if (sources.length > 1) {
+      console.error(`Plusieurs data sources : ${sources.map((s) => `${s.name} (${s.id})`).join(" | ")}`);
+      console.error("Renseigne DATA_SOURCE_ID pour lever l'ambiguïté.");
+      process.exit(1);
+    }
+    dsId = sources[0].id;
+  }
+
+  // 2) Les propriétés vivent sur la data source, pas sur la database.
+  const dsObj = await notionGet(`/data_sources/${dsId}`);
+  const props = dsObj.properties || {};
   if (!props[STATUT_PROP]) {
-    console.error(`Propriété "${STATUT_PROP}" introuvable dans la DB.`);
+    console.error(`Propriété "${STATUT_PROP}" introuvable dans la data source.`);
     console.error(`Propriétés disponibles : ${Object.keys(props).join(" | ")}`);
     process.exit(1);
   }
@@ -92,21 +106,6 @@ async function resolveSourceAndCheck() {
     process.exit(1);
   }
 
-  // Résolution de la data source.
-  let dsId = DATA_SOURCE_ID;
-  if (!dsId) {
-    const sources = db.data_sources || [];
-    if (sources.length === 0) {
-      console.error("Aucune data source sur cette database (API trop ancienne ?).");
-      process.exit(1);
-    }
-    if (sources.length > 1) {
-      console.error(`Plusieurs data sources : ${sources.map((s) => `${s.name} (${s.id})`).join(" | ")}`);
-      console.error("Renseigne DATA_SOURCE_ID pour lever l'ambiguïté.");
-      process.exit(1);
-    }
-    dsId = sources[0].id;
-  }
   console.log(`Schema OK — statut "${STATUT_PROP}", exclusions : ${STATUTS_EXCLUS.join(" | ")}`);
   console.log(`Data source : ${dsId}`);
   return dsId;
@@ -116,7 +115,7 @@ async function fetchDeals(dsId) {
   const pages = [];
   let cursor;
   do {
-    const res = await notionFetch(`/data_sources/${dsId}/query`, {
+    const res = await notionPost(`/data_sources/${dsId}/query`, {
       start_cursor: cursor,
       page_size: 100,
     });
@@ -127,8 +126,8 @@ async function fetchDeals(dsId) {
   const exclus = STATUTS_EXCLUS.map(norm);
   return pages.filter((pg) => {
     const s = norm(getSelect(P(pg, STATUT_PROP)));
-    if (s === "") return false;
-    return !exclus.includes(s);
+    if (s === "") return false;          // exclut les statuts vides
+    return !exclus.includes(s);          // exclut 1/ INVESTI et 3/ DEAD
   });
 }
 
