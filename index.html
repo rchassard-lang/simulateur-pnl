@@ -102,12 +102,12 @@ tr.subtotal-row td{background:#EFEDE6 !important;border-top:2px solid #D4D0C8;bo
   <th style="width:70px" class="sorth" data-col="i">Type</th>
   <th class="sorth" data-col="n">Deal · Sponsor</th>
   <th class="sorth" data-col="pr">Statut</th>
+  <th class="num sorth" data-col="p">Proba</th>
   <th class="sorth" data-col="ds">Date décaissement</th>
   <th class="num sorth" data-col="t">TRI</th>
   <th class="num sorth" data-col="sz">Taille</th>
   <th class="num sorth" data-col="uf">Upfront</th>
   <th class="num sorth" data-col="pm">Promote</th>
-  <th class="num sorth" data-col="p">Proba</th>
   <th style="width:30px"></th>
 </tr>
 </thead>
@@ -118,17 +118,17 @@ tr.subtotal-row td{background:#EFEDE6 !important;border-top:2px solid #D4D0C8;bo
 <div class="sec">Agenda · taille du symbole ∝ montant · forme = instrument · couleur = statut</div>
 <div class="legend" style="margin-bottom:2px">
   <span class="li" style="color:#999;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.04em">Forme</span>
-  <span class="li"><svg width="14" height="14" style="vertical-align:middle"><circle cx="7" cy="7" r="6" fill="#8A8A8A"/></svg>Equity</span>
-  <span class="li"><svg width="14" height="14" style="vertical-align:middle"><rect x="1.5" y="1.5" width="11" height="11" rx="2" fill="#8A8A8A"/></svg>Bridge Senior</span>
+  <span class="li"><svg width="14" height="14" style="vertical-align:middle"><rect x="1.5" y="1.5" width="11" height="11" rx="2" fill="#8A8A8A"/></svg>Equity</span>
+  <span class="li"><svg width="14" height="14" style="vertical-align:middle"><circle cx="7" cy="7" r="6" fill="#8A8A8A"/></svg>Bridge Senior</span>
   <span class="li"><svg width="14" height="14" style="vertical-align:middle"><polygon points="7,1 13,7 7,13 1,7" fill="#8A8A8A"/></svg>Demeures</span>
   <span class="li"><svg width="14" height="14" style="vertical-align:middle"><polygon points="7,1.5 13,12.5 1,12.5" fill="#8A8A8A"/></svg>Autre</span>
   <span class="li"><svg width="14" height="14" style="vertical-align:middle"><polygon points="7,1 12.2,4 12.2,10 7,13 1.8,10 1.8,4" fill="#8A8A8A"/></svg>Broker</span>
 </div>
 <div class="legend">
   <span class="li" style="color:#999;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.04em">Statut</span>
-  <span class="li"><span class="ls" style="background:#1F7A4D"></span>En levée</span>
+  <span class="li"><span class="ls" style="background:#1F7A4D"></span>En Levée</span>
   <span class="li"><span class="ls" style="background:#185FA5"></span>Sécurisés</span>
-  <span class="li"><span class="ls" style="background:#9A7020"></span>DD en cours</span>
+  <span class="li"><span class="ls" style="background:#9A7020"></span>En DD</span>
   <span class="li" style="margin-left:8px"><span style="display:inline-block;width:18px;height:2px;background:#1F7A4D;margin-right:5px;vertical-align:middle"></span>Aujourd'hui</span>
 </div>
 <div class="tlbox"><svg id="tl" style="display:block;height:380px"></svg></div>
@@ -147,23 +147,25 @@ tr.subtotal-row td{background:#EFEDE6 !important;border-top:2px solid #D4D0C8;bo
 
 <script>
 let deals=[
-  {id:'portopro0',n:'Porto - Promotion',sh:'Porto - Promot',sp:'Avenue',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2026-10-30',de:null,p:0.25,sz:6,t:18,uf:0,pm:0},
-  {id:'hotelcan1',n:'Hotel Cannes',sh:'Hotel Cannes',sp:'CinqTerre',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-03-29',de:null,p:0.5,sz:8,t:0,uf:0,pm:0},
-  {id:'dealdeha2',n:'Deal de Hassan',sh:'Deal de Hassan',sp:'',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.1,sz:0,t:0,uf:0,pm:0},
-  {id:'paris1623',n:'Paris 16 - 20 Foch',sh:'Paris 16 - 20 ',sp:'Cyril de Lalagade',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.05,sz:2,t:0,uf:0,pm:0},
-  {id:'paris0814',n:'Paris 08 - 1 Wilson',sh:'Paris 08 - 1 W',sp:'Altifund',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-10-01',de:null,p:0.8,sz:2.5,t:10.7,uf:100,pm:0},
-  {id:'paris1725',n:'Paris 17 - 22 Bayen',sh:'Paris 17 - 22 ',sp:'Mimco',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-11-02',de:null,p:0.5,sz:3,t:12,uf:100,pm:0},
-  {id:'figueira6',n:'Figueira da Foz - Maisons modulaires',sh:'Figueira da Fo',sp:'Manu Barbosa',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.5,sz:4,t:0,uf:0,pm:0},
-  {id:'paris0847',n:'Paris 08 - 40 Marceau',sh:'Paris 08 - 40 ',sp:'Barnes AM',i:'EQ',pr:'2/ EN COURS x En levée',ds:'2026-10-02',de:null,p:0.8,sz:1,t:14.8,uf:60,pm:182},
-  {id:'benouvil8',n:'Bénouville - Manoir Hastings',sh:'Bénouville - M',sp:'NESO',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2026-12-15',de:null,p:0.75,sz:3,t:0,uf:0,pm:0},
-  {id:'meylande9',n:'Meylan - Decibeldonne',sh:'Meylan - Decib',sp:'Artea',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-11-30',de:null,p:0.75,sz:5.3,t:11,uf:0,pm:0},
-  {id:'chamonix10',n:'Chamonix - ALPY',sh:'Chamonix - ALP',sp:'Artemise AM',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-03-15',de:null,p:0.75,sz:7,t:0,uf:0,pm:0},
-  {id:'strasbou11',n:'Strasbourg - Wacken',sh:'Strasbourg - W',sp:'Artea',i:'BR',pr:'2/ EN COURS x En levée',ds:'2026-10-09',de:null,p:1,sz:3,t:12,uf:60,pm:0},
-  {id:'larochel12',n:'La Rochelle - Le Rupella',sh:'La Rochelle - ',sp:'Coco AM',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-01-31',de:null,p:0.25,sz:1.5,t:11.4,uf:90,pm:76},
-  {id:'marseill13',n:'Marseille - 22 Breteuil',sh:'Marseille - 22',sp:'Kintsugi Real Estate',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2026-12-15',de:null,p:0.8,sz:4.73,t:13.6,uf:284,pm:315},
-  {id:'litigati14',n:'Litigation',sh:'Litigation',sp:'Eskariam Advisors',i:'AU',pr:'2/ EN COURS x En levée',ds:'2026-12-14',de:null,p:1,sz:1.3,t:10,uf:130,pm:0},
-  {id:'paris03215',n:'Paris 03 - 26 Francs Bourgeois',sh:'Paris 03 - 26 ',sp:'CinqTerre',i:'DE',pr:'2/ EN COURS x En levée',ds:'2026-10-31',de:null,p:1,sz:0.675,t:23,uf:13,pm:0},
-  {id:'saintjor16',n:'Saint-Jorioz - Annecy',sh:'Saint-Jorioz -',sp:'Coco AM',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2027-04-01',de:'2027-07-20',p:0.8,sz:5,t:12.3,uf:300,pm:434}
+  {id:'portopro0',n:'Porto - Promotion',sh:'Porto - Promot',sp:'Avenue',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0,sz:18,t:22,uf:0,pm:0},
+  {id:'hotelcan1',n:'Hotel Cannes',sh:'Hotel Cannes',sp:'CinqTerre',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.5,sz:8,t:0,uf:0,pm:0},
+  {id:'ruebayen2',n:'Rue Bayen - Deal de Mimco',sh:'Rue Bayen - De',sp:'Mimco',i:'BR',pr:'2/ EN COURS x Sécurisés',ds:'2026-10-19',de:null,p:0.8,sz:3,t:11,uf:70,pm:0},
+  {id:'dealdeha3',n:'Deal de Hassan',sh:'Deal de Hassan',sp:'',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0,sz:0,t:0,uf:0,pm:0},
+  {id:'paris1624',n:'Paris 16 - 20 Foch',sh:'Paris 16 - 20 ',sp:'Cyril de Lalagade',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0,sz:2,t:0,uf:0,pm:0},
+  {id:'paris0815',n:'Paris 08 - 1 Wilson',sh:'Paris 08 - 1 W',sp:'Altifund',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-10-01',de:null,p:0.8,sz:2.5,t:10.7,uf:100,pm:0},
+  {id:'paris1726',n:'Paris 17 - 22 Bayen',sh:'Paris 17 - 22 ',sp:'Mimco',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-10-15',de:null,p:0.5,sz:3,t:12,uf:100,pm:0},
+  {id:'figueira7',n:'Figueira da Foz - Maisons modulaires',sh:'Figueira da Fo',sp:'Manu Barbosa',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.5,sz:4,t:0,uf:0,pm:0},
+  {id:'paris0848',n:'Paris 08 - 40 Marceau',sh:'Paris 08 - 40 ',sp:'Barnes AM',i:'EQ',pr:'2/ EN COURS x En levée',ds:'2026-10-02',de:null,p:0.8,sz:1,t:14.8,uf:60,pm:182},
+  {id:'benouvil9',n:'Bénouville - Manoir Hastings',sh:'Bénouville - M',sp:'NESO',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2026-12-24',de:null,p:0.5,sz:3,t:0,uf:0,pm:0},
+  {id:'meylande10',n:'Meylan - Decibeldonne',sh:'Meylan - Decib',sp:'Artea',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.75,sz:5.3,t:11,uf:0,pm:0},
+  {id:'chamonix11',n:'Chamonix - ALPY',sh:'Chamonix - ALP',sp:'Artemise AM',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-03-15',de:null,p:0.75,sz:7,t:0,uf:0,pm:0},
+  {id:'strasbou12',n:'Strasbourg - Wacken',sh:'Strasbourg - W',sp:'Artea',i:'BR',pr:'2/ EN COURS x En levée',ds:'2026-09-30',de:null,p:1,sz:3,t:12,uf:60,pm:0},
+  {id:'isneauvi13',n:'Isneauville - Vente à réméré',sh:'Isneauville - ',sp:'Demathieu Bard Immobilier',i:'AU',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.05,sz:3.9,t:17,uf:0,pm:0},
+  {id:'larochel14',n:'La Rochelle - Le Rupella',sh:'La Rochelle - ',sp:'Coco AM',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-01-31',de:null,p:0.25,sz:1.5,t:11.4,uf:90,pm:76},
+  {id:'marseill15',n:'Marseille - 22 Breteuil',sh:'Marseille - 22',sp:'Kintsugi Real Estate',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2026-12-15',de:null,p:0.8,sz:4.73,t:13.6,uf:284,pm:315},
+  {id:'litigati17',n:'Litigation',sh:'Litigation',sp:'Eskariam Advisors',i:'AU',pr:'2/ EN COURS x En levée',ds:'2026-10-05',de:null,p:1,sz:2,t:10,uf:150,pm:0},
+  {id:'paris03218',n:'Paris 03 - 26 Francs Bourgeois',sh:'Paris 03 - 26 ',sp:'CinqTerre',i:'DE',pr:'2/ EN COURS x En levée',ds:'2026-10-31',de:null,p:1,sz:0.675,t:23,uf:13,pm:0},
+  {id:'saintjor19',n:'Saint-Jorioz - Annecy',sh:'Saint-Jorioz -',sp:'Coco AM',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2026-12-01',de:'2027-02-15',p:0.8,sz:5,t:12.3,uf:300,pm:434}
 ];
 const iC={EQ:'#378ADD',BR:'#BA7517',DE:'#7F77DD',AU:'#D85A30',BK:'#2D9B7D'};
 const iL={EQ:'Equity',BR:'Bridge SR',DE:'Demeures',AU:'Autre',BK:'Broker'};
@@ -178,7 +180,7 @@ const CAT_COLOR={'En levée':'#1F7A4D','Sécurisés':'#185FA5','DD en cours':'#9
 // Titre de bloc affiché dans le tableau
 const CAT_TITLE={'En levée':'Deals en levée','Sécurisés':'Deals sécurisés','DD en cours':'Deals en DD'};
 // Forme par instrument (agenda) : EQ=rond, BR=carré, DE=losange, AU=triangle, BK=hexagone
-const INSTR_SHAPE={EQ:'circle',BR:'square',DE:'diamond',AU:'triangle',BK:'hexagon'};
+const INSTR_SHAPE={EQ:'square',BR:'circle',DE:'diamond',AU:'triangle',BK:'hexagon'};
 const INSTR_SHAPE_LABEL={EQ:'Equity',BR:'Bridge Senior',DE:'Demeures',AU:'Autre',BK:'Broker'};
 function catOf(pr){
   if(!pr)return'';
@@ -189,6 +191,28 @@ function catOf(pr){
   return hit||tail;
 }
 function catColor(pr){return CAT_COLOR[catOf(pr)]||'#9A7020';}
+// Coupe un libellé en au plus 2 lignes, équilibrées, sur un espace. Tronque si trop long.
+function wrapLabel(txt,maxPerLine){
+  txt=(txt||'').trim();
+  if(txt.length<=maxPerLine)return[txt];
+  const words=txt.split(' ');
+  if(words.length===1){
+    // un seul mot trop long : coupe brut
+    return[txt.slice(0,maxPerLine),txt.slice(maxPerLine,maxPerLine*2-1)+(txt.length>maxPerLine*2-1?'…':'')];
+  }
+  // cherche le point de coupe le plus équilibré
+  let best=1,bestDiff=1e9;
+  for(let i=1;i<words.length;i++){
+    const l1=words.slice(0,i).join(' ').length;
+    const l2=words.slice(i).join(' ').length;
+    const diff=Math.abs(l1-l2);
+    if(l1<=maxPerLine&&diff<bestDiff){bestDiff=diff;best=i;}
+  }
+  let l1=words.slice(0,best).join(' ');
+  let l2=words.slice(best).join(' ');
+  if(l2.length>maxPerLine)l2=l2.slice(0,maxPerLine-1)+'…';
+  return[l1,l2];
+}
 // Dessine une forme centrée en (cx,cy) de "rayon" r, remplie de fill
 function shapeSvg(instr,cx,cy,r,fill,strokeW){
   const sw=strokeW||2.5;
@@ -261,17 +285,37 @@ function calc(){
   const ufSec=s.reduce(function(a,d){return isSec(d)?a+d.uf:a;},0);
   const pmSec=s.reduce(function(a,d){return isSec(d)?a+d.pm:a;},0);
   const pnlSec=ufSec+pmSec;
-  return{n:s.length,sz:sz,szSec:szSec,uf:uf,ufPond:ufPond,ufSec:ufSec,pm:pm,pmW:pmW,pmSec:pmSec,pnlBrut:uf+pm,pnlPond:uf+pmW,pnlSec:pnlSec,tri:td>0?tn/td:0};
+  // --- Ventilation par statut ---
+  const byCat={};
+  CAT_ORDER.forEach(function(c){byCat[c]={n:0,sz:0,uf:0,pm:0,pnl:0};});
+  s.forEach(function(d){
+    const c=catOf(d.pr);if(!byCat[c])byCat[c]={n:0,sz:0,uf:0,pm:0,pnl:0};
+    byCat[c].n+=1;byCat[c].sz+=d.sz||0;byCat[c].uf+=d.uf||0;byCat[c].pm+=d.pm||0;byCat[c].pnl+=(d.uf||0)+(d.pm||0);
+  });
+  return{n:s.length,sz:sz,szSec:szSec,uf:uf,ufPond:ufPond,ufSec:ufSec,pm:pm,pmW:pmW,pmSec:pmSec,pnlBrut:uf+pm,pnlPond:uf+pmW,pnlSec:pnlSec,tri:td>0?tn/td:0,byCat:byCat};
 }
 
 function renderKPIs(){
   const k=calc();
+  const bc=k.byCat;
+  // Génère les 3 lignes grises de ventilation par statut pour une métrique donnée.
+  // getVal(cat) renvoie la valeur formatée pour ce statut.
+  function ventil(getVal){
+    return CAT_ORDER.map(function(c){
+      return '<div class="kpi-s" style="color:#999;font-size:11px">'+(c==='DD en cours'?'En DD':c==='En levée'?'En levée':c)+' : '+getVal(c)+'</div>';
+    }).join('');
+  }
   document.getElementById('kpis').innerHTML=
-    '<div class="kpi"><div class="kpi-l">Deals</div><div class="kpi-v">'+k.n+'<span style="font-size:12px;color:#CCC"> /'+deals.length+'</span></div></div>'+
-    '<div class="kpi"><div class="kpi-l">Notionnel</div><div class="kpi-v">'+k.sz.toFixed(1)+' M€</div><div class="kpi-s" style="color:#888;font-size:12px">Sécurisé '+k.szSec.toFixed(1)+' M€</div><div class="kpi-s" style="color:#555;font-size:12px">À lever '+(k.sz-k.szSec).toFixed(1)+' M€</div></div>'+
-    '<div class="kpi"><div class="kpi-l">Upfront</div><div class="kpi-v">'+fmt(k.uf)+'</div><div class="kpi-s" style="color:#888;font-size:12px">Sécurisé '+fmt(k.ufSec)+'</div><div class="kpi-s" style="color:#555;font-size:12px">Prob. '+fmt(k.ufPond)+'</div></div>'+
-    '<div class="kpi"><div class="kpi-l">Promote</div><div class="kpi-v">'+fmt(k.pm)+'</div><div class="kpi-s" style="color:#888;font-size:12px">Sécurisé '+fmt(k.pmSec)+'</div><div class="kpi-s" style="color:#555;font-size:12px">Prob. '+fmt(k.pmW)+'</div></div>'+
-    '<div class="kpi"><div class="kpi-l">P&L Total</div><div class="kpi-v">'+fmt(k.pnlBrut)+'</div><div class="kpi-s" style="color:#888;font-size:12px">Sécurisé '+fmt(k.pnlSec)+'</div><div class="kpi-s" style="color:#555;font-size:12px">Prob. '+fmt(k.pnlPond)+'</div></div>';
+    '<div class="kpi"><div class="kpi-l">Deals</div><div class="kpi-v">'+k.n+'<span style="font-size:12px;color:#CCC"> /'+deals.length+'</span></div>'+
+      ventil(function(c){return String(bc[c]?bc[c].n:0);})+'</div>'+
+    '<div class="kpi"><div class="kpi-l">Notionnel</div><div class="kpi-v">'+k.sz.toFixed(1)+' M€</div>'+
+      ventil(function(c){return (bc[c]?bc[c].sz:0).toFixed(1)+' M€';})+'</div>'+
+    '<div class="kpi"><div class="kpi-l">Upfront</div><div class="kpi-v">'+fmt(k.uf)+'</div>'+
+      ventil(function(c){return fmt(bc[c]?bc[c].uf:0);})+'</div>'+
+    '<div class="kpi"><div class="kpi-l">Promote</div><div class="kpi-v">'+fmt(k.pm)+'</div>'+
+      ventil(function(c){return fmt(bc[c]?bc[c].pm:0);})+'</div>'+
+    '<div class="kpi"><div class="kpi-l">P&L Total</div><div class="kpi-v">'+fmt(k.pnlBrut)+'</div>'+
+      ventil(function(c){return fmt(bc[c]?bc[c].pnl:0);})+'</div>';
 }
 
 let sortState={col:null,dir:1};
@@ -322,12 +366,12 @@ function renderTable(){
       '<td><select class="ed" data-id="'+d.id+'" data-f="i" style="width:72px;font-size:9px;font-weight:600;color:#FFF;background-color:'+pillBg+';border-radius:3px;padding:2px 3px;text-align:center">'+optI+'</select></td>'+
       '<td><input class="ed '+nameClass+'" data-id="'+d.id+'" data-f="n" value="'+(d.n||'').replace(/"/g,'&quot;')+'" style="width:128px"><input class="ed sp-inline" data-id="'+d.id+'" data-f="sp" value="'+(d.sp||'').replace(/"/g,'&quot;')+'" placeholder="sponsor" style="width:78px"></td>'+
       '<td><select class="ed '+prClass+'" data-id="'+d.id+'" data-f="pr" style="width:96px">'+optPr+'</select></td>'+
+      '<td class="num"><input class="ed" data-id="'+d.id+'" data-f="p" value="'+Math.round(d.p*100)+'" style="width:30px;text-align:right;color:#666">%</td>'+
       '<td><input class="ed" type="date" data-id="'+d.id+'" data-f="ds" value="'+dsv+'" style="width:112px;color:#777;font-size:10.5px"></td>'+
       '<td class="num"><input class="ed" data-id="'+d.id+'" data-f="t" value="'+d.t+'" style="width:34px;text-align:right;color:#666">%</td>'+
       '<td class="num"><input class="ed" data-id="'+d.id+'" data-f="sz" value="'+(+d.sz).toFixed(2)+'" style="width:40px;text-align:right;font-weight:500"> M€</td>'+
       '<td class="num"><input class="ed" data-id="'+d.id+'" data-f="uf" value="'+d.uf+'" style="width:38px;text-align:right;font-weight:500"> k€</td>'+
       '<td class="num"><input class="ed" data-id="'+d.id+'" data-f="pm" value="'+d.pm+'" style="width:42px;text-align:right;font-weight:500"> k€</td>'+
-      '<td class="num"><input class="ed" data-id="'+d.id+'" data-f="p" value="'+Math.round(d.p*100)+'" style="width:30px;text-align:right;color:#666">%</td>'+
       '<td style="text-align:center;width:30px"><button class="delDeal" data-id="'+d.id+'" title="Supprimer">🗑</button></td>'+
     '</tr>';
   });
@@ -344,10 +388,11 @@ function renderTable(){
       }
       const titre=CAT_TITLE[grp]||grp;
       const col=CAT_COLOR[grp]||'#666';
-      html+='<tr class="group-head"><td colspan="11" style="background:#FBFAF7;border-top:2px solid '+col+';padding:7px 8px;font-size:11px;font-weight:700;color:'+col+';text-transform:uppercase;letter-spacing:.05em">'+titre+'</td></tr>';
+      const nGrp=j-i;
+      html+='<tr class="group-head"><td colspan="11" style="background:#FBFAF7;border-top:2px solid '+col+';padding:7px 8px;font-size:11px;font-weight:700;color:'+col+';text-transform:uppercase;letter-spacing:.05em">'+titre+' ('+nGrp+')</td></tr>';
       for(let k=i;k<j;k++)html+=rows[k];
-      html+='<tr class="subtotal-row"><td></td><td></td><td style="font-weight:600;font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.04em">Total '+grp+'</td><td></td><td></td><td></td><td class="num" style="font-weight:600">'+fmtSz(ts)+' M€</td><td class="num" style="font-weight:600">'+Math.round(tu)+' k€</td><td class="num" style="font-weight:600">'+Math.round(tp)+' k€</td><td></td><td></td></tr>';
-      html+='<tr class="subtotal-row"><td></td><td></td><td style="font-weight:500;font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.04em;font-style:italic">Probabilisé</td><td></td><td></td><td></td><td class="num" style="font-weight:500;color:#999;font-style:italic">'+fmtSz(ps)+' M€</td><td class="num" style="font-weight:500;color:#999;font-style:italic">'+Math.round(pu)+' k€</td><td class="num" style="font-weight:500;color:#999;font-style:italic">'+Math.round(pp)+' k€</td><td></td><td></td></tr>';
+      html+='<tr class="subtotal-row"><td></td><td></td><td style="font-weight:600;font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.04em">Total '+grp+'</td><td></td><td></td><td></td><td></td><td class="num" style="font-weight:600">'+fmtSz(ts)+' M€</td><td class="num" style="font-weight:600">'+Math.round(tu)+' k€</td><td class="num" style="font-weight:600">'+Math.round(tp)+' k€</td><td></td></tr>';
+      html+='<tr class="subtotal-row"><td></td><td></td><td style="font-weight:500;font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.04em;font-style:italic">Probabilisé</td><td></td><td></td><td></td><td></td><td class="num" style="font-weight:500;color:#999;font-style:italic">'+fmtSz(ps)+' M€</td><td class="num" style="font-weight:500;color:#999;font-style:italic">'+Math.round(pu)+' k€</td><td class="num" style="font-weight:500;color:#999;font-style:italic">'+Math.round(pp)+' k€</td><td></td></tr>';
       i=j;
     }
   }else{
@@ -406,23 +451,41 @@ function renderTimeline(){
   times.push(today.getTime());
   let minT=Math.min.apply(null,times), maxT=Math.max.apply(null,times);
   let startD=new Date(minT);startD=new Date(startD.getFullYear(),startD.getMonth(),1);
-  let endD=new Date(maxT);  endD=new Date(endD.getFullYear(),endD.getMonth()+2,1);
+  let endD=new Date(maxT);  endD=new Date(endD.getFullYear(),endD.getMonth()+1,1);   // fin = fin du mois du dernier deal
   const range=endD-startD;
 
   const nMonths=(endD.getFullYear()-startD.getFullYear())*12+(endD.getMonth()-startD.getMonth());
-  const MONTH_W=88;
   const BAND_LABEL_W=96;                              // colonne de gauche pour l'étiquette de bande
-  const pL=BAND_LABEL_W,pR=30,pT=44,pB=40;
-  const iW=Math.max(560,nMonths*MONTH_W);
+  const pL=BAND_LABEL_W,pR=12,pT=44,pB=40;
+  const MONTH_W=110;                                  // largeur fixe par mois dans le viewBox
+  const iW=nMonths*MONTH_W;
   const W=pL+iW+pR;
 
-  function rv(sz){return Math.round(12+22*Math.sqrt(Math.min(sz,20)/20));}
-  const RMAX=34;
+  // Rayon ∝ montant (linéaire). Plancher 1 M€, plafond 20 M€ — contraste fort.
+  var R_MIN=11, R_MAX=72, SZ_MIN=1, SZ_MAX=20;
+  function rv(sz){
+    var v=Math.max(SZ_MIN,Math.min(sz,SZ_MAX));
+    var t=(v-SZ_MIN)/(SZ_MAX-SZ_MIN);
+    return Math.round(R_MIN+t*(R_MAX-R_MIN));
+  }
+  const RMAX=72;
   function xp(d){return pL+((new Date(d)-startD)/range)*iW}
 
   // --- Groupement par statut, dans l'ordre En levée -> Sécurisés -> DD en cours ---
   // Anti-chevauchement CONFINÉ à chaque bande (sous-lignes internes).
-  const SUBLANE_H=Math.max(74,RMAX*2+22);
+  // Hauteur de sous-ligne calibrée sur un rayon typique (pas le max absolu) pour resserrer.
+  var rMed=18;
+  if(dwd.length){
+    var rr=dwd.map(function(d){return rv(d.sz);}).sort(function(a,b){return a-b;});
+    rMed=rr[Math.floor(rr.length*0.7)]||18;          // ~70e percentile
+  }
+  const SUBLANE_H=Math.max(64,rMed*2+34);
+  // demi-largeur d'étiquette d'un deal (pour éviter le chevauchement des titres)
+  function halfLabelW(d){
+    const lines=wrapLabel(d.n?String(d.n).trim():'',18);
+    const maxLen=Math.max(lines[0].length,(lines[1]||'').length);
+    return (maxLen*6.4+10)/2;
+  }
   const bands=[];                                    // {cat, color, deals:[...], nSub}
   CAT_ORDER.forEach(function(cat){
     const list=dwd.filter(function(d){return catOf(d.pr)===cat;});
@@ -431,11 +494,17 @@ function renderTimeline(){
     const lanes=[];
     list.forEach(function(d){
       const sx=xp(d.ds),ex=d.de?xp(d.de):sx,r=rv(d.sz);
+      const lw=halfLabelW(d);
+      // encombrement = max(rayon forme, demi-largeur étiquette) de chaque côté du centre
+      const half=Math.max(r,lw);
       let li=0;
       while(li<20){
         const lane=lanes[li]||[];
-        const conflict=lane.some(function(it){return !(it.ex<sx-r-it.r-14||it.sx>ex+r+it.r+14);});
-        if(!conflict){lanes[li]=lane;lanes[li].push({sx:sx,ex:ex,r:r});break}
+        const conflict=lane.some(function(it){
+          const ithalf=Math.max(it.r,it.lw);
+          return !(it.ex<sx-half-ithalf-4||it.sx>ex+half+ithalf+4);
+        });
+        if(!conflict){lanes[li]=lane;lanes[li].push({sx:sx,ex:ex,r:r,lw:lw});break}
         li++;
       }
       d._sub=li;
@@ -473,9 +542,11 @@ function renderTimeline(){
     s+='<line x1="'+pL+'" y1="'+bandTop.toFixed(1)+'" x2="'+(pL+iW)+'" y2="'+bandTop.toFixed(1)+'" stroke="'+b.color+'" stroke-width="1" opacity="0.35"/>';
     // étiquette de bande à gauche
     const midY=bandTop+bandH/2;
-    s+='<text x="'+(BAND_LABEL_W-12)+'" y="'+(midY-6).toFixed(1)+'" text-anchor="end" font-size="12" fill="'+b.color+'" font-weight="700" font-family="-apple-system,sans-serif">'+CAT_TITLE[b.cat].replace('Deals ','').replace('deals ','')+'</text>';
+    s+='<text x="'+(BAND_LABEL_W-12)+'" y="'+(midY-6).toFixed(1)+'" text-anchor="end" font-size="12" fill="'+b.color+'" font-weight="700" font-family="-apple-system,sans-serif">'+b.cat+'</text>';
     s+='<text x="'+(BAND_LABEL_W-12)+'" y="'+(midY+10).toFixed(1)+'" text-anchor="end" font-size="10" fill="#BBB" font-family="-apple-system,sans-serif">'+b.deals.length+' deal'+(b.deals.length>1?'s':'')+'</text>';
 
+    // 1re passe : formes + montant, et préparation des étiquettes (position par défaut = au-dessus)
+    const labels=[];
     b.deals.forEach(function(d){
       const sx=xp(d.ds),ex=d.de?xp(d.de):sx;
       const cy=bandTop+(d._sub+0.5)*SUBLANE_H;
@@ -489,11 +560,26 @@ function renderTimeline(){
       const fs=Math.max(10,Math.min(13,Math.floor(r*0.6)));
       const lbl=d.sz>=10?Math.round(d.sz)+'M':d.sz.toFixed(1)+'M';
       s+='<text x="'+sx.toFixed(1)+'" y="'+cy.toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" font-size="'+fs+'" fill="white" font-weight="700" font-family="-apple-system,sans-serif">'+lbl+'</text>';
-      const nm=d.sh?String(d.sh).trim():'';
-      const ty=(cy-r-11).toFixed(1);
-      const tw=nm.length*6.6+10;
-      s+='<rect x="'+(sx-tw/2).toFixed(1)+'" y="'+(parseFloat(ty)-11).toFixed(1)+'" width="'+tw.toFixed(1)+'" height="16" rx="3" fill="#FFFFFF" opacity="0.85"/>';
-      s+='<text x="'+sx.toFixed(1)+'" y="'+ty+'" text-anchor="middle" font-size="11" fill="'+c+'" font-weight="600" font-family="-apple-system,sans-serif">'+nm+'</text>';
+      const full=(d.n?String(d.n).trim():'');
+      const lines=wrapLabel(full,18);
+      const LH=13;
+      const maxLen=Math.max(lines[0].length,(lines[1]||'').length);
+      const tw=maxLen*6.4+10;
+      const boxH=lines.length*LH+4;
+      const isLastSub=(d._sub>=b.nSub-1);          // sur la dernière sous-ligne de la bande ?
+      labels.push({sx:sx,cy:cy,r:r,c:c,lines:lines,LH:LH,tw:tw,boxH:boxH,x1:sx-tw/2,x2:sx+tw/2,below:false,lockUp:isLastSub});
+    });
+
+    // Les étiquettes ne se chevauchent plus horizontalement (sous-lignes distinctes),
+    // donc on les place toutes au-dessus de leur forme.
+    // rendu des étiquettes
+    labels.forEach(function(L){
+      const boxTop=L.cy-L.r-6-L.boxH;
+      s+='<rect x="'+(L.sx-L.tw/2).toFixed(1)+'" y="'+boxTop.toFixed(1)+'" width="'+L.tw.toFixed(1)+'" height="'+L.boxH.toFixed(1)+'" rx="3" fill="#FFFFFF" opacity="0.88"/>';
+      L.lines.forEach(function(ln,idx){
+        const ly=boxTop+11+idx*L.LH;
+        s+='<text x="'+L.sx.toFixed(1)+'" y="'+ly.toFixed(1)+'" text-anchor="middle" font-size="10.5" fill="'+L.c+'" font-weight="600" font-family="-apple-system,sans-serif">'+ln+'</text>';
+      });
     });
 
     bandTop+=bandH+10;
@@ -503,13 +589,24 @@ function renderTimeline(){
   if(today>=startD&&today<=endD){
     const tx=xp(today).toFixed(1);
     s+='<line x1="'+tx+'" y1="'+pT+'" x2="'+tx+'" y2="'+(H-pB)+'" stroke="#1F7A4D" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.85"/>';
-    s+='<text x="'+(parseFloat(tx)+5).toFixed(1)+'" y="'+(pT-14)+'" font-size="10" fill="#1F7A4D" font-family="-apple-system,sans-serif" font-weight="700">aujourd\'hui</text>';
+    s+='<text x="'+tx+'" y="'+(H-pB+18).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#1F7A4D" font-family="-apple-system,sans-serif" font-weight="700">aujourd\'hui</text>';
+  }
+
+  // Trait de bascule d'année : 1er janvier de chaque année dans la fenêtre
+  for(let yr=startD.getFullYear()+1;yr<=endD.getFullYear();yr++){
+    const jan1=new Date(yr,0,1);
+    if(jan1>=startD&&jan1<=endD){
+      const yx=xp(jan1).toFixed(1);
+      s+='<line x1="'+yx+'" y1="'+pT+'" x2="'+yx+'" y2="'+(H-pB)+'" stroke="#999" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.7"/>';
+      s+='<text x="'+yx+'" y="'+(H-pB+18).toFixed(1)+'" text-anchor="middle" font-size="10" fill="#999" font-family="-apple-system,sans-serif" font-weight="700">'+yr+'</text>';
+    }
   }
 
   svg.setAttribute('viewBox','0 0 '+W+' '+H);
-  svg.style.width=W+'px';
-  svg.style.minWidth=W+'px';
-  svg.style.height=H+'px';
+  svg.removeAttribute('preserveAspectRatio');
+  svg.style.width='100%';
+  svg.style.minWidth='0';
+  svg.style.height='auto';
   svg.innerHTML=s;
 }
 
