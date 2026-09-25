@@ -115,13 +115,20 @@ tr.subtotal-row td{background:#EFEDE6 !important;border-top:2px solid #D4D0C8;bo
 </table>
 </div>
 
-<div class="sec">Agenda · taille du rond ∝ montant</div>
+<div class="sec">Agenda · taille du symbole ∝ montant · forme = instrument · couleur = statut</div>
+<div class="legend" style="margin-bottom:2px">
+  <span class="li" style="color:#999;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.04em">Forme</span>
+  <span class="li"><svg width="14" height="14" style="vertical-align:middle"><circle cx="7" cy="7" r="6" fill="#8A8A8A"/></svg>Equity</span>
+  <span class="li"><svg width="14" height="14" style="vertical-align:middle"><rect x="1.5" y="1.5" width="11" height="11" rx="2" fill="#8A8A8A"/></svg>Bridge Senior</span>
+  <span class="li"><svg width="14" height="14" style="vertical-align:middle"><polygon points="7,1 13,7 7,13 1,7" fill="#8A8A8A"/></svg>Demeures</span>
+  <span class="li"><svg width="14" height="14" style="vertical-align:middle"><polygon points="7,1.5 13,12.5 1,12.5" fill="#8A8A8A"/></svg>Autre</span>
+  <span class="li"><svg width="14" height="14" style="vertical-align:middle"><polygon points="7,1 12.2,4 12.2,10 7,13 1.8,10 1.8,4" fill="#8A8A8A"/></svg>Broker</span>
+</div>
 <div class="legend">
-  <span class="li"><span class="ls" style="background:#378ADD"></span>Equity</span>
-  <span class="li"><span class="ls" style="background:#BA7517"></span>Bridge Senior</span>
-  <span class="li"><span class="ls" style="background:#7F77DD"></span>Demeures</span>
-  <span class="li"><span class="ls" style="background:#D85A30"></span>Autre</span>
-  <span class="li"><span class="ls" style="background:#2D9B7D"></span>Broker</span>
+  <span class="li" style="color:#999;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.04em">Statut</span>
+  <span class="li"><span class="ls" style="background:#1F7A4D"></span>En levée</span>
+  <span class="li"><span class="ls" style="background:#185FA5"></span>Sécurisés</span>
+  <span class="li"><span class="ls" style="background:#9A7020"></span>DD en cours</span>
   <span class="li" style="margin-left:8px"><span style="display:inline-block;width:18px;height:2px;background:#1F7A4D;margin-right:5px;vertical-align:middle"></span>Aujourd'hui</span>
 </div>
 <div class="tlbox"><svg id="tl" style="display:block;height:380px"></svg></div>
@@ -140,23 +147,26 @@ tr.subtotal-row td{background:#EFEDE6 !important;border-top:2px solid #D4D0C8;bo
 
 <script>
 let deals=[
-  {id:'portopro0',n:'Porto - Promotion',sh:'Porto - Promot',sp:'Avenue',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2026-10-30',de:null,p:0.25,sz:6,t:18,uf:0,pm:0},
-  {id:'hotelcan1',n:'Hotel Cannes',sh:'Hotel Cannes',sp:'CinqTerre',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-03-29',de:null,p:0.5,sz:8,t:0,uf:0,pm:0},
-  {id:'dealdeha2',n:'Deal de Hassan',sh:'Deal de Hassan',sp:'',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.1,sz:0,t:0,uf:0,pm:0},
-  {id:'paris1623',n:'Paris 16 - 20 Foch',sh:'Paris 16 - 20 ',sp:'Cyril de Lalagade',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.05,sz:2,t:0,uf:0,pm:0},
-  {id:'paris0814',n:'Paris 08 - 1 Wilson',sh:'Paris 08 - 1 W',sp:'Altifund',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-10-01',de:null,p:0.8,sz:2.5,t:10.7,uf:100,pm:0},
-  {id:'paris1725',n:'Paris 17 - 22 Bayen',sh:'Paris 17 - 22 ',sp:'Mimco',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-11-02',de:null,p:0.5,sz:3,t:12,uf:100,pm:0},
-  {id:'figueira6',n:'Figueira da Foz - Maisons modulaires',sh:'Figueira da Fo',sp:'Manu Barbosa',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.5,sz:4,t:0,uf:0,pm:0},
-  {id:'paris0847',n:'Paris 08 - 40 Marceau',sh:'Paris 08 - 40 ',sp:'Barnes AM',i:'EQ',pr:'2/ EN COURS x En levée',ds:'2026-10-02',de:null,p:0.8,sz:1,t:14.8,uf:60,pm:182},
-  {id:'benouvil8',n:'Bénouville - Manoir Hastings',sh:'Bénouville - M',sp:'NESO',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2026-12-15',de:null,p:0.75,sz:3,t:0,uf:0,pm:0},
-  {id:'meylande9',n:'Meylan - Decibeldonne',sh:'Meylan - Decib',sp:'Artea',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-11-30',de:null,p:0.75,sz:5.3,t:11,uf:0,pm:0},
-  {id:'chamonix10',n:'Chamonix - ALPY',sh:'Chamonix - ALP',sp:'Artemise AM',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-03-15',de:null,p:0.75,sz:7,t:0,uf:0,pm:0},
-  {id:'strasbou11',n:'Strasbourg - Wacken',sh:'Strasbourg - W',sp:'Artea',i:'BR',pr:'2/ EN COURS x En levée',ds:'2026-10-09',de:null,p:1,sz:3,t:12,uf:60,pm:0},
-  {id:'larochel12',n:'La Rochelle - Le Rupella',sh:'La Rochelle - ',sp:'Coco AM',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-01-31',de:null,p:0.25,sz:1.5,t:11.4,uf:90,pm:76},
-  {id:'marseill13',n:'Marseille - 22 Breteuil',sh:'Marseille - 22',sp:'Kintsugi Real Estate',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2026-12-15',de:null,p:0.8,sz:4.73,t:13.6,uf:284,pm:315},
-  {id:'litigati14',n:'Litigation',sh:'Litigation',sp:'Eskariam Advisors',i:'AU',pr:'2/ EN COURS x En levée',ds:'2026-12-14',de:null,p:1,sz:1.3,t:10,uf:130,pm:0},
-  {id:'paris03215',n:'Paris 03 - 26 Francs Bourgeois',sh:'Paris 03 - 26 ',sp:'CinqTerre',i:'DE',pr:'2/ EN COURS x En levée',ds:'2026-10-31',de:null,p:1,sz:0.675,t:23,uf:13,pm:0},
-  {id:'saintjor16',n:'Saint-Jorioz - Annecy',sh:'Saint-Jorioz -',sp:'Coco AM',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2027-04-01',de:'2027-07-20',p:0.8,sz:5,t:12.3,uf:300,pm:434}
+  {id:'portopro0',n:'Porto - Promotion',sh:'Porto - Promot',sp:'Avenue',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0,sz:18,t:22,uf:0,pm:0},
+  {id:'hotelcan1',n:'Hotel Cannes',sh:'Hotel Cannes',sp:'CinqTerre',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.5,sz:8,t:0,uf:0,pm:0},
+  {id:'ruebayen2',n:'Rue Bayen - Deal de Mimco',sh:'Rue Bayen - De',sp:'Mimco',i:'BR',pr:'2/ EN COURS x Sécurisés',ds:'2026-10-19',de:null,p:0.8,sz:3,t:11,uf:70,pm:0},
+  {id:'dealdeha3',n:'Deal de Hassan',sh:'Deal de Hassan',sp:'',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0,sz:0,t:0,uf:0,pm:0},
+  {id:'paris1624',n:'Paris 16 - 20 Foch',sh:'Paris 16 - 20 ',sp:'Cyril de Lalagade',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0,sz:2,t:0,uf:0,pm:0},
+  {id:'paris0815',n:'Paris 08 - 1 Wilson',sh:'Paris 08 - 1 W',sp:'Altifund',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-10-01',de:null,p:0.8,sz:2.5,t:10.7,uf:100,pm:0},
+  {id:'paris1726',n:'Paris 17 - 22 Bayen',sh:'Paris 17 - 22 ',sp:'Mimco',i:'BR',pr:'2/ EN COURS x DD en cours',ds:'2026-10-15',de:null,p:0.5,sz:3,t:12,uf:100,pm:0},
+  {id:'figueira7',n:'Figueira da Foz - Maisons modulaires',sh:'Figueira da Fo',sp:'Manu Barbosa',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.5,sz:4,t:0,uf:0,pm:0},
+  {id:'paris0848',n:'Paris 08 - 40 Marceau',sh:'Paris 08 - 40 ',sp:'Barnes AM',i:'EQ',pr:'2/ EN COURS x En levée',ds:'2026-10-02',de:null,p:0.8,sz:1,t:14.8,uf:60,pm:182},
+  {id:'benouvil9',n:'Bénouville - Manoir Hastings',sh:'Bénouville - M',sp:'NESO',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2026-12-24',de:null,p:0.5,sz:3,t:0,uf:0,pm:0},
+  {id:'meylande10',n:'Meylan - Decibeldonne',sh:'Meylan - Decib',sp:'Artea',i:'BR',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.75,sz:5.3,t:11,uf:0,pm:0},
+  {id:'chamonix11',n:'Chamonix - ALPY',sh:'Chamonix - ALP',sp:'Artemise AM',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-03-15',de:null,p:0.75,sz:7,t:0,uf:0,pm:0},
+  {id:'strasbou12',n:'Strasbourg - Wacken',sh:'Strasbourg - W',sp:'Artea',i:'BR',pr:'2/ EN COURS x En levée',ds:'2026-09-30',de:null,p:1,sz:3,t:12,uf:60,pm:0},
+  {id:'isneauvi13',n:'Isneauville - Vente à réméré',sh:'Isneauville - ',sp:'Demathieu Bard Immobilier',i:'AU',pr:'2/ EN COURS x DD en cours',ds:null,de:null,p:0.05,sz:3.9,t:17,uf:0,pm:0},
+  {id:'larochel14',n:'La Rochelle - Le Rupella',sh:'La Rochelle - ',sp:'Coco AM',i:'EQ',pr:'2/ EN COURS x DD en cours',ds:'2027-01-31',de:null,p:0.25,sz:1.5,t:11.4,uf:90,pm:76},
+  {id:'marseill15',n:'Marseille - 22 Breteuil',sh:'Marseille - 22',sp:'Kintsugi Real Estate',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2026-12-15',de:null,p:0.8,sz:4.73,t:13.6,uf:284,pm:315},
+  {id:'sujetpat16',n:'Sujet patrimonial',sh:'Sujet patrimon',sp:'',i:'DE',pr:'2/ EN COURS x DD en cours',ds:'2026-03-23',de:null,p:0.05,sz:0.5,t:10,uf:0,pm:0},
+  {id:'litigati17',n:'Litigation',sh:'Litigation',sp:'Eskariam Advisors',i:'AU',pr:'2/ EN COURS x En levée',ds:'2026-10-05',de:null,p:1,sz:2,t:10,uf:150,pm:0},
+  {id:'paris03218',n:'Paris 03 - 26 Francs Bourgeois',sh:'Paris 03 - 26 ',sp:'CinqTerre',i:'DE',pr:'2/ EN COURS x En levée',ds:'2026-10-31',de:null,p:1,sz:0.675,t:23,uf:13,pm:0},
+  {id:'saintjor19',n:'Saint-Jorioz - Annecy',sh:'Saint-Jorioz -',sp:'Coco AM',i:'EQ',pr:'2/ EN COURS x Sécurisés',ds:'2026-12-01',de:'2027-02-15',p:0.8,sz:5,t:12.3,uf:300,pm:434}
 ];
 const iC={EQ:'#378ADD',BR:'#BA7517',DE:'#7F77DD',AU:'#D85A30',BK:'#2D9B7D'};
 const iL={EQ:'Equity',BR:'Bridge SR',DE:'Demeures',AU:'Autre',BK:'Broker'};
@@ -166,6 +176,13 @@ const CAT_ORDER=['En levée','Sécurisés','DD en cours'];
 const CAT_KEY={'En levée':'levee','Sécurisés':'secu','DD en cours':'dd'};
 const CAT_RANK={'En levée':0,'Sécurisés':1,'DD en cours':2};
 const CATS_SECURISE=['En levée','Sécurisés'];
+// Couleur par statut (agenda + libellés)
+const CAT_COLOR={'En levée':'#1F7A4D','Sécurisés':'#185FA5','DD en cours':'#9A7020'};
+// Titre de bloc affiché dans le tableau
+const CAT_TITLE={'En levée':'Deals en levée','Sécurisés':'Deals sécurisés','DD en cours':'Deals en DD'};
+// Forme par instrument (agenda) : EQ=rond, BR=carré, DE=losange, AU=triangle, BK=hexagone
+const INSTR_SHAPE={EQ:'circle',BR:'square',DE:'diamond',AU:'triangle',BK:'hexagon'};
+const INSTR_SHAPE_LABEL={EQ:'Equity',BR:'Bridge Senior',DE:'Demeures',AU:'Autre',BK:'Broker'};
 function catOf(pr){
   if(!pr)return'';
   const s=String(pr);
@@ -173,6 +190,34 @@ function catOf(pr){
   const tail=(idx>=0?s.slice(idx+3):s).trim();
   const hit=CAT_ORDER.find(function(c){return c.toLowerCase()===tail.toLowerCase();});
   return hit||tail;
+}
+function catColor(pr){return CAT_COLOR[catOf(pr)]||'#9A7020';}
+// Dessine une forme centrée en (cx,cy) de "rayon" r, remplie de fill
+function shapeSvg(instr,cx,cy,r,fill,strokeW){
+  const sw=strokeW||2.5;
+  const common='fill="'+fill+'" stroke="white" stroke-width="'+sw+'" opacity="0.95"';
+  const shape=INSTR_SHAPE[instr]||'circle';
+  if(shape==='square'){
+    const a=r*1.78; // côté ~ pour surface comparable au rond
+    return '<rect x="'+(cx-a/2).toFixed(1)+'" y="'+(cy-a/2).toFixed(1)+'" width="'+a.toFixed(1)+'" height="'+a.toFixed(1)+'" rx="3" '+common+'/>';
+  }
+  if(shape==='diamond'){
+    const d=r*1.3;
+    const pts=[[cx,cy-d],[cx+d,cy],[cx,cy+d],[cx-d,cy]].map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ');
+    return '<polygon points="'+pts+'" '+common+'/>';
+  }
+  if(shape==='triangle'){
+    const d=r*1.4;
+    const pts=[[cx,cy-d],[cx+d*0.92,cy+d*0.72],[cx-d*0.92,cy+d*0.72]].map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ');
+    return '<polygon points="'+pts+'" '+common+'/>';
+  }
+  if(shape==='hexagon'){
+    const d=r*1.18;const pts=[];
+    for(let k=0;k<6;k++){const ang=Math.PI/180*(60*k-30);pts.push((cx+d*Math.cos(ang)).toFixed(1)+','+(cy+d*Math.sin(ang)).toFixed(1));}
+    return '<polygon points="'+pts.join(' ')+'" '+common+'/>';
+  }
+  // circle par défaut
+  return '<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+r.toFixed(1)+'" '+common+'/>';
 }
 
 let sel=new Set(deals.map(function(d){return d.id;}));
@@ -300,6 +345,9 @@ function renderTable(){
         if(sel.has(sorted[j].id)){const d=sorted[j];ts+=d.sz||0;tu+=d.uf||0;tp+=d.pm||0;ps+=(d.sz||0)*(d.p||0);pu+=(d.uf||0)*(d.p||0);pp+=(d.pm||0)*(d.p||0);}
         j++;
       }
+      const titre=CAT_TITLE[grp]||grp;
+      const col=CAT_COLOR[grp]||'#666';
+      html+='<tr class="group-head"><td colspan="11" style="background:#FBFAF7;border-top:2px solid '+col+';padding:7px 8px;font-size:11px;font-weight:700;color:'+col+';text-transform:uppercase;letter-spacing:.05em">'+titre+'</td></tr>';
       for(let k=i;k<j;k++)html+=rows[k];
       html+='<tr class="subtotal-row"><td></td><td></td><td style="font-weight:600;font-size:10px;color:#666;text-transform:uppercase;letter-spacing:.04em">Total '+grp+'</td><td></td><td></td><td></td><td class="num" style="font-weight:600">'+fmtSz(ts)+' M€</td><td class="num" style="font-weight:600">'+Math.round(tu)+' k€</td><td class="num" style="font-weight:600">'+Math.round(tp)+' k€</td><td></td><td></td></tr>';
       html+='<tr class="subtotal-row"><td></td><td></td><td style="font-weight:500;font-size:10px;color:#999;text-transform:uppercase;letter-spacing:.04em;font-style:italic">Probabilisé</td><td></td><td></td><td></td><td class="num" style="font-weight:500;color:#999;font-style:italic">'+fmtSz(ps)+' M€</td><td class="num" style="font-weight:500;color:#999;font-style:italic">'+Math.round(pu)+' k€</td><td class="num" style="font-weight:500;color:#999;font-style:italic">'+Math.round(pp)+' k€</td><td></td><td></td></tr>';
@@ -421,19 +469,18 @@ function renderTimeline(){
     const sx=xp(d.ds),ex=d.de?xp(d.de):sx;
     const cy=pT+(d._l+0.5)*lh;
     const r=rv(d.sz);
-    const c=iC[d.i];
+    const c=catColor(d.pr);           // couleur = STATUT
     if(d.de){
       s+='<line x1="'+sx.toFixed(1)+'" y1="'+cy.toFixed(1)+'" x2="'+ex.toFixed(1)+'" y2="'+cy.toFixed(1)+'" stroke="'+c+'" stroke-width="3" opacity="0.45"/>';
-      s+='<circle cx="'+ex.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+(r*0.55).toFixed(1)+'" fill="'+c+'" stroke="white" stroke-width="1.5" opacity="0.5"/>';
+      s+=shapeSvg(d.i,ex,cy,r*0.55,c,1.5);
     }
-    s+='<circle cx="'+sx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+r+'" fill="'+c+'" stroke="white" stroke-width="2.5" opacity="0.95"/>';
-    // Montant dans le rond
+    s+=shapeSvg(d.i,sx,cy,r,c,2.5);    // forme = INSTRUMENT
+    // Montant dans la forme
     const fs=Math.max(10,Math.min(13,Math.floor(r*0.6)));
     const lbl=d.sz>=10?Math.round(d.sz)+'M':d.sz.toFixed(1)+'M';
     s+='<text x="'+sx.toFixed(1)+'" y="'+cy.toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" font-size="'+fs+'" fill="white" font-weight="700" font-family="-apple-system,sans-serif">'+lbl+'</text>';
     // Titre au-dessus, sur pastille blanche pour lisibilité
-    const cat=catOf(d.pr);
-    const nameCol=cat==='En levée'?'#1F7A4D':(cat==='Sécurisés'?'#185FA5':'#7A5A15');
+    const nameCol=c;
     const nm=d.sh?String(d.sh).trim():'';
     const ty=(cy-r-11).toFixed(1);
     const tw=nm.length*6.6+10;
